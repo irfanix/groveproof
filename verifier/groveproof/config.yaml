@@ -1,0 +1,36 @@
+# GroveProof checking rules. Every number here is shown in the README and in
+# the "How we calculated this" box. Change them only on purpose: changing them
+# changes the recipe hash, so old checks can still be re-run with old settings.
+version: "rules-1.0"
+
+h3_resolution: 9            # map cell size about 0.1 km2
+max_cells: 300              # must match MAX_CELLS in the smart contract
+
+satellite:
+  collection: sentinel-2-l2a
+  max_scene_cloud_pct: 60   # skip scenes that are mostly cloud
+  max_scenes: 12            # per date window
+  resolution_m: 10
+  # Scene Classification Layer classes we trust (4 vegetation, 5 bare soil, 6 water, 7 unclassified)
+  clear_scl_classes: [4, 5, 6, 7]
+
+forest:
+  forest_probability: 0.5       # pixel is forest if model probability >= this
+  low_confidence_band: [0.35, 0.65]
+  min_ndvi_drop_for_loss: 0.10  # a loss pixel must also lose this much greenness
+  ndvi_fallback_threshold: 0.6  # used only if the trained model is missing
+
+verdict:
+  min_clear_pct: 70             # below this: Can't check yet
+  min_forest_cover_pct: 30      # below this: Not eligible (mostly not forest)
+  min_forest_ha: 1.0
+  not_eligible_loss_pct: 5.0    # tree loss at or above this: Not eligible
+  review_loss_pct: 2.0          # tree loss at or above this: Needs review
+  max_low_confidence_pct: 20    # unsure pixels above this: Needs review
+
+credits:
+  base_uncertainty_deduction: 0.20
+  extra_deduction_if_clear_below_90: 0.05
+  extra_deduction_if_low_conf_above_10: 0.05
+  max_uncertainty_deduction: 0.35
+  buffer_share: 0.10            # set aside in case the forest is later lost

@@ -1,0 +1,12 @@
+{
+  "type": "FeatureCollection",
+  "note": "Evaluation areas. NEVER use them for training. Add at least 10 areas with confirmed tree loss (truth = loss) from Global Forest Watch (tree cover loss layer, pick the loss year between the two windows) and 10 stable protected forests (truth = stable). Each area about 1 to 3 km2. The two examples below must be checked on a satellite map and replaced or confirmed.",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {"id": "stable-01", "truth": "stable", "name": "EXAMPLE: replace with a confirmed stable forest",
+                     "before": ["2025-01-01", "2025-03-31"], "after": ["2026-01-01", "2026-03-31"], "source": "to fill: how you confirmed it"},
+      "geometry": {"type": "Polygon", "coordinates": [[[78.840, 16.020], [78.855, 16.020], [78.855, 16.034], [78.840, 16.034], [78.840, 16.020]]]}
+    }
+  ]
+}

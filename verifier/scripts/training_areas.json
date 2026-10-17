@@ -1,0 +1,21 @@
+{
+  "note": "Training areas: a mix of forest, farmland, villages, scrub and water across peninsular India. Keep them far from the evaluation areas and sample forests. Windows are dry season (fewer clouds). Add more areas for a better model.",
+  "areas": [
+    {"name": "Seshachalam hills (AP)", "window": ["2024-01-01", "2024-03-31"],
+     "geometry": {"type": "Polygon", "coordinates": [[[79.30, 13.68], [79.36, 13.68], [79.36, 13.74], [79.30, 13.74], [79.30, 13.68]]]}},
+    {"name": "Papikonda hills edge (AP)", "window": ["2024-01-01", "2024-03-31"],
+     "geometry": {"type": "Polygon", "coordinates": [[[81.45, 17.40], [81.51, 17.40], [81.51, 17.46], [81.45, 17.46], [81.45, 17.40]]]}},
+    {"name": "Krishna delta farmland (AP)", "window": ["2024-01-01", "2024-03-31"],
+     "geometry": {"type": "Polygon", "coordinates": [[[80.90, 16.30], [80.96, 16.30], [80.96, 16.36], [80.90, 16.36], [80.90, 16.30]]]}},
+    {"name": "Kurnool scrub and farms (AP)", "window": ["2024-01-01", "2024-03-31"],
+     "geometry": {"type": "Polygon", "coordinates": [[[78.00, 15.70], [78.06, 15.70], [78.06, 15.76], [78.00, 15.76], [78.00, 15.70]]]}},
+    {"name": "Bandipur forest edge (KA)", "window": ["2024-01-01", "2024-03-31"],
+     "geometry": {"type": "Polygon", "coordinates": [[[76.55, 11.70], [76.61, 11.70], [76.61, 11.76], [76.55, 11.76], [76.55, 11.70]]]}},
+    {"name": "Hyderabad outskirts (TG)", "window": ["2024-01-01", "2024-03-31"],
+     "geometry": {"type": "Polygon", "coordinates": [[[78.60, 17.30], [78.66, 17.30], [78.66, 17.36], [78.60, 17.36], [78.60, 17.30]]]}},
+    {"name": "Similipal edge (OD)", "window": ["2024-01-01", "2024-03-31"],
+     "geometry": {"type": "Polygon", "coordinates": [[[86.20, 21.80], [86.26, 21.80], [86.26, 21.86], [86.20, 21.86], [86.20, 21.80]]]}},
+    {"name": "Western Ghats, Wayanad (KL)", "window": ["2024-01-01", "2024-03-31"],
+     "geometry": {"type": "Polygon", "coordinates": [[[76.05, 11.65], [76.11, 11.65], [76.11, 11.71], [76.05, 11.71], [76.05, 11.65]]]}}
+  ]
+}

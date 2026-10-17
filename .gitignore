@@ -1,0 +1,10 @@
+node_modules/
+.venv/
+.env
+.env.local
+__pycache__/
+.pytest_cache/
+dist/
+verifier/data/
+contracts/cache/
+contracts/artifacts/
