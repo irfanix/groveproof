@@ -1,0 +1,137 @@
+{
+  "check_id": "7eec4f3f9f4fd7f1",
+  "result": {
+    "verdict": "NeedsReview",
+    "reason": "The forest map is unsure about 64.6% of the area, so a person should take a look.",
+    "numbers": {
+      "area_ha": 248.88,
+      "clear_pct": 100.0,
+      "forest_before_ha": 88.55,
+      "forest_after_ha": 142.66,
+      "forest_cover_after_pct": 57.3,
+      "loss_ha": 0.0,
+      "loss_pct": 0.0,
+      "low_confidence_pct": 64.6,
+      "mean_ndvi_before": 0.311,
+      "mean_ndvi_after": 0.374,
+      "method": "random_forest"
+    },
+    "credits": {
+      "zone": "tropical_dry_forest_asia",
+      "zone_label": "Tropical dry forest, Asia",
+      "forest_ha_used": 142.66,
+      "growth_t_dm_per_ha_yr": 2.0,
+      "root_shoot_ratio": 0.28,
+      "carbon_fraction": 0.47,
+      "annual_co2_t": 629.38,
+      "uncertainty_deduction": 0.25,
+      "buffer_share": 0.1,
+      "credits": 0,
+      "factors_verified": false
+    },
+    "recipe_hash": "0x7eec4f3f9f4fd7f12a1773744052fb94f378a273b0cd18327a739cade522aee9"
+  },
+  "result_hash": "0x0862f94994a68973a0cb7aad16911acb2979b85ea7f9f68275c5e3722131cf13",
+  "recipe_hash": "0x7eec4f3f9f4fd7f12a1773744052fb94f378a273b0cd18327a739cade522aee9",
+  "explanation": {
+    "text": "Result: Needs review. The forest map is unsure about 64.6% of the area, so a person should take a look.",
+    "source": "template"
+  },
+  "timings": [
+    {
+      "label": "Finding satellite images",
+      "seconds": 6.3
+    },
+    {
+      "label": "Removing clouds (before)",
+      "seconds": 65.8
+    },
+    {
+      "label": "Removing clouds (after)",
+      "seconds": 74.5
+    },
+    {
+      "label": "Mapping forest and comparing",
+      "seconds": 0.1
+    },
+    {
+      "label": "Calculating credits",
+      "seconds": 0.0
+    },
+    {
+      "label": "Writing the explanation",
+      "seconds": 0.0
+    }
+  ],
+  "cells": [
+    "618693407921143807",
+    "618693407921405951",
+    "618693407922454527",
+    "618693407923240959",
+    "618693407923503103",
+    "618693407924289535",
+    "618693407924551679",
+    "618693407929794559",
+    "618693407931629567",
+    "618693407931891711",
+    "618693407932153855",
+    "618693407932415999",
+    "618693407932678143",
+    "618693407932940287",
+    "618693407933202431",
+    "618693407950503935",
+    "618693407951028223",
+    "618693407951552511",
+    "618693407952076799",
+    "618693411801399295",
+    "618693411801661439",
+    "618693411803496447",
+    "618693411803758591"
+  ],
+  "windows": {
+    "before": [
+      "2025-01-01",
+      "2025-03-31"
+    ],
+    "after": [
+      "2026-01-01",
+      "2026-03-31"
+    ]
+  },
+  "scenes": {
+    "before": [
+      "S2A_MSIL2A_20250315T051241_R019_T43PHT_20250315T113317",
+      "S2A_MSIL2A_20250315T051241_R019_T44PKC_20250315T113317",
+      "S2B_MSIL2A_20250206T050909_R019_T43PHT_20250206T072338",
+      "S2B_MSIL2A_20250206T050909_R019_T44PKC_20250206T072338",
+      "S2B_MSIL2A_20250216T050809_R019_T43PHT_20250216T073441",
+      "S2B_MSIL2A_20250216T050809_R019_T44PKC_20250216T073441",
+      "S2B_MSIL2A_20250226T050659_R019_T43PHT_20250226T071341",
+      "S2B_MSIL2A_20250308T050659_R019_T43PHT_20250308T072151",
+      "S2B_MSIL2A_20250308T050659_R019_T44PKC_20250308T072151",
+      "S2B_MSIL2A_20250328T050659_R019_T43PHT_20250328T072008",
+      "S2C_MSIL2A_20250211T051001_R019_T43PHT_20250211T102211",
+      "S2C_MSIL2A_20250211T051001_R019_T44PKC_20250211T102211"
+    ],
+    "after": [
+      "S2B_MSIL2A_20260221T050729_R019_T43PHT_20260221T104107",
+      "S2B_MSIL2A_20260303T050649_R019_T43PHT_20260303T101734",
+      "S2B_MSIL2A_20260313T050649_R019_T43PHT_20260313T091002",
+      "S2B_MSIL2A_20260313T050649_R019_T44PKC_20260313T091002",
+      "S2C_MSIL2A_20260117T051141_R019_T43PHT_20260117T081509",
+      "S2C_MSIL2A_20260117T051141_R019_T44PKC_20260117T081509",
+      "S2C_MSIL2A_20260206T051011_R019_T43PHT_20260206T101110",
+      "S2C_MSIL2A_20260206T051011_R019_T44PKC_20260206T101110",
+      "S2C_MSIL2A_20260216T050911_R019_T43PHT_20260216T100811",
+      "S2C_MSIL2A_20260216T050911_R019_T44PKC_20260216T100811",
+      "S2C_MSIL2A_20260308T050651_R019_T43PHT_20260308T101312",
+      "S2C_MSIL2A_20260308T050651_R019_T44PKC_20260308T101312"
+    ]
+  },
+  "model": {
+    "name": "random_forest",
+    "version": "rf-1.0",
+    "sha256": "2b272c412a7652c67a0fab95811453a4fabad12ceef58b9c64c8eb3d2943b1c4"
+  },
+  "checked_at": "2026-10-17 08:25 UTC"
+}

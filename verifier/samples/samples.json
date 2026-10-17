@@ -8,13 +8,42 @@
       "expected": "Verified",
       "description": "Dense, protected hill forest. Expected: healthy, no tree loss.",
       "zone": "tropical_dry_forest_asia",
-      "before": ["2025-01-01", "2025-03-31"],
-      "after": ["2026-01-01", "2026-03-31"],
+      "before": [
+        "2025-01-01",
+        "2025-03-31"
+      ],
+      "after": [
+        "2026-01-01",
+        "2026-03-31"
+      ],
       "boundary": {
         "type": "Polygon",
-        "coordinates": [[[78.770, 16.110], [78.785, 16.110], [78.785, 16.124], [78.770, 16.124], [78.770, 16.110]]]
+        "coordinates": [
+          [
+            [
+              78.77,
+              16.11
+            ],
+            [
+              78.785,
+              16.11
+            ],
+            [
+              78.785,
+              16.124
+            ],
+            [
+              78.77,
+              16.124
+            ],
+            [
+              78.77,
+              16.11
+            ]
+          ]
+        ]
       },
-      "cached_check_id": null
+      "cached_check_id": "7eec4f3f9f4fd7f1"
     },
     {
       "id": "nallamala-overlap",
@@ -23,11 +52,40 @@
       "expected": "AlreadyClaimed",
       "description": "Half of this square overlaps the Nallamala sample. After that forest is registered on-chain, this one is refused.",
       "zone": "tropical_dry_forest_asia",
-      "before": ["2025-01-01", "2025-03-31"],
-      "after": ["2026-01-01", "2026-03-31"],
+      "before": [
+        "2025-01-01",
+        "2025-03-31"
+      ],
+      "after": [
+        "2026-01-01",
+        "2026-03-31"
+      ],
       "boundary": {
         "type": "Polygon",
-        "coordinates": [[[78.778, 16.104], [78.793, 16.104], [78.793, 16.118], [78.778, 16.118], [78.778, 16.104]]]
+        "coordinates": [
+          [
+            [
+              78.778,
+              16.104
+            ],
+            [
+              78.793,
+              16.104
+            ],
+            [
+              78.793,
+              16.118
+            ],
+            [
+              78.778,
+              16.118
+            ],
+            [
+              78.778,
+              16.104
+            ]
+          ]
+        ]
       },
       "cached_check_id": null
     },
@@ -38,13 +96,42 @@
       "expected": "CantCheckYet",
       "description": "The healthy forest, but checked with monsoon dates when clouds hide most of the land.",
       "zone": "tropical_dry_forest_asia",
-      "before": ["2025-07-01", "2025-07-20"],
-      "after": ["2026-07-01", "2026-07-20"],
+      "before": [
+        "2025-07-01",
+        "2025-07-20"
+      ],
+      "after": [
+        "2026-07-01",
+        "2026-07-20"
+      ],
       "boundary": {
         "type": "Polygon",
-        "coordinates": [[[78.770, 16.110], [78.785, 16.110], [78.785, 16.124], [78.770, 16.124], [78.770, 16.110]]]
+        "coordinates": [
+          [
+            [
+              78.77,
+              16.11
+            ],
+            [
+              78.785,
+              16.11
+            ],
+            [
+              78.785,
+              16.124
+            ],
+            [
+              78.77,
+              16.124
+            ],
+            [
+              78.77,
+              16.11
+            ]
+          ]
+        ]
       },
-      "cached_check_id": null
+      "cached_check_id": "4359ff386a082acb"
     },
     {
       "id": "cleared-forest",
@@ -53,8 +140,14 @@
       "expected": "NotEligible",
       "description": "Forest with confirmed recent clearing. Choose it on Global Forest Watch (tree cover loss layer, year 2025), draw a small square (about 1 to 3 km2) over the cleared patch, paste the coordinates here.",
       "zone": "tropical_dry_forest_asia",
-      "before": ["2025-01-01", "2025-03-31"],
-      "after": ["2026-01-01", "2026-03-31"],
+      "before": [
+        "2025-01-01",
+        "2025-03-31"
+      ],
+      "after": [
+        "2026-01-01",
+        "2026-03-31"
+      ],
       "boundary": null,
       "cached_check_id": null
     }

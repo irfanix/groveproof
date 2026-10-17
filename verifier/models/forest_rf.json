@@ -1,0 +1,31 @@
+{
+  "version": "rf-1.0",
+  "features": [
+    "B02",
+    "B03",
+    "B04",
+    "B08",
+    "B11",
+    "B12",
+    "NDVI",
+    "NDMI"
+  ],
+  "labels": "ESA WorldCover 2021, class 10 = forest",
+  "training_areas": [
+    "Seshachalam hills (AP)",
+    "Papikonda hills edge (AP)",
+    "Krishna delta farmland (AP)",
+    "Kurnool scrub and farms (AP)",
+    "Bandipur forest edge (KA)",
+    "Hyderabad outskirts (TG)",
+    "Similipal edge (OD)",
+    "Western Ghats, Wayanad (KL)"
+  ],
+  "held_out_areas": [
+    "Similipal edge (OD)",
+    "Western Ghats, Wayanad (KL)"
+  ],
+  "holdout_accuracy": 0.9311,
+  "pixels": 32000,
+  "sha256": "2b272c412a7652c67a0fab95811453a4fabad12ceef58b9c64c8eb3d2943b1c4"
+}
