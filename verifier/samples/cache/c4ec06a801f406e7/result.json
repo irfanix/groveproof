@@ -1,0 +1,31 @@
+{
+  "verdict": "CantCheckYet",
+  "reason": "Only 10.6% of the area was cloud-free in both pictures (we need 70%). Try again with other dates.",
+  "numbers": {
+    "area_ha": 248.88,
+    "clear_pct": 10.6,
+    "forest_before_ha": 12.08,
+    "forest_after_ha": 11.18,
+    "forest_cover_after_pct": 4.5,
+    "loss_ha": 1.94,
+    "loss_pct": 16.06,
+    "low_confidence_pct": 81.0,
+    "mean_ndvi_before": 0.549,
+    "mean_ndvi_after": 0.529,
+    "method": "random_forest"
+  },
+  "credits": {
+    "zone": "tropical_dry_forest_asia",
+    "zone_label": "Tropical dry forest, Asia",
+    "forest_ha_used": 11.18,
+    "growth_t_dm_per_ha_yr": 2.0,
+    "root_shoot_ratio": 0.28,
+    "carbon_fraction": 0.47,
+    "annual_co2_t": 49.32,
+    "uncertainty_deduction": 0.3,
+    "buffer_share": 0.1,
+    "credits": 0,
+    "factors_verified": false
+  },
+  "recipe_hash": "0xc4ec06a801f406e7700489041fe25d5cdf498dde0ef8bf84c4816d360c704ab6"
+}

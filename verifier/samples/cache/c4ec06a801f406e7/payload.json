@@ -1,0 +1,116 @@
+{
+  "check_id": "c4ec06a801f406e7",
+  "result": {
+    "verdict": "CantCheckYet",
+    "reason": "Only 10.6% of the area was cloud-free in both pictures (we need 70%). Try again with other dates.",
+    "numbers": {
+      "area_ha": 248.88,
+      "clear_pct": 10.6,
+      "forest_before_ha": 12.08,
+      "forest_after_ha": 11.18,
+      "forest_cover_after_pct": 4.5,
+      "loss_ha": 1.94,
+      "loss_pct": 16.06,
+      "low_confidence_pct": 81.0,
+      "mean_ndvi_before": 0.549,
+      "mean_ndvi_after": 0.529,
+      "method": "random_forest"
+    },
+    "credits": {
+      "zone": "tropical_dry_forest_asia",
+      "zone_label": "Tropical dry forest, Asia",
+      "forest_ha_used": 11.18,
+      "growth_t_dm_per_ha_yr": 2.0,
+      "root_shoot_ratio": 0.28,
+      "carbon_fraction": 0.47,
+      "annual_co2_t": 49.32,
+      "uncertainty_deduction": 0.3,
+      "buffer_share": 0.1,
+      "credits": 0,
+      "factors_verified": false
+    },
+    "recipe_hash": "0xc4ec06a801f406e7700489041fe25d5cdf498dde0ef8bf84c4816d360c704ab6"
+  },
+  "result_hash": "0xf3c7ecbe6d826a9eac1263a9e0bc1ce4e38f0c1eeb8b193b998a6b87d81fe34b",
+  "recipe_hash": "0xc4ec06a801f406e7700489041fe25d5cdf498dde0ef8bf84c4816d360c704ab6",
+  "explanation": {
+    "text": "Result: Can't check yet. Only 10.6% of the area was cloud-free in both pictures (we need 70%). Try again with other dates.",
+    "source": "template"
+  },
+  "timings": [
+    {
+      "label": "Finding satellite images",
+      "seconds": 3.1
+    },
+    {
+      "label": "Removing clouds (before)",
+      "seconds": 11.4
+    },
+    {
+      "label": "Removing clouds (after)",
+      "seconds": 6.6
+    },
+    {
+      "label": "Mapping forest and comparing",
+      "seconds": 0.1
+    },
+    {
+      "label": "Calculating credits",
+      "seconds": 0.0
+    },
+    {
+      "label": "Writing the explanation",
+      "seconds": 0.0
+    }
+  ],
+  "cells": [
+    "618693407921143807",
+    "618693407921405951",
+    "618693407922454527",
+    "618693407923240959",
+    "618693407923503103",
+    "618693407924289535",
+    "618693407924551679",
+    "618693407929794559",
+    "618693407931629567",
+    "618693407931891711",
+    "618693407932153855",
+    "618693407932415999",
+    "618693407932678143",
+    "618693407932940287",
+    "618693407933202431",
+    "618693407950503935",
+    "618693407951028223",
+    "618693407951552511",
+    "618693407952076799",
+    "618693411801399295",
+    "618693411801661439",
+    "618693411803496447",
+    "618693411803758591"
+  ],
+  "windows": {
+    "before": [
+      "2025-07-01",
+      "2025-07-20"
+    ],
+    "after": [
+      "2026-07-01",
+      "2026-07-20"
+    ]
+  },
+  "scenes": {
+    "before": [
+      "S2C_MSIL2A_20250711T050711_R019_T43PHT_20250711T102713",
+      "S2C_MSIL2A_20250711T050711_R019_T44PKC_20250711T102713"
+    ],
+    "after": [
+      "S2B_MSIL2A_20260711T050649_R019_T43PHT_20260711T085428"
+    ]
+  },
+  "model": {
+    "name": "random_forest",
+    "version": "rf-1.0",
+    "sha256": "2b272c412a7652c67a0fab95811453a4fabad12ceef58b9c64c8eb3d2943b1c4"
+  },
+  "checked_at": "2026-10-17 08:46 UTC"
+}
