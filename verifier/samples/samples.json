@@ -9,80 +9,81 @@
       "description": "Dense, protected hill forest. Expected: healthy, no tree loss.",
       "zone": "tropical_dry_forest_asia",
       "before": [
-        "2025-01-01",
-        "2025-03-31"
+        "2024-11-01",
+        "2025-01-31"
       ],
       "after": [
-        "2026-01-01",
-        "2026-03-31"
+        "2025-11-01",
+        "2026-01-31"
       ],
       "boundary": {
         "type": "Polygon",
         "coordinates": [
           [
             [
-              78.77,
+              78.786,
               16.11
             ],
             [
-              78.785,
+              78.801,
               16.11
             ],
             [
-              78.785,
+              78.801,
               16.124
             ],
             [
-              78.77,
+              78.786,
               16.124
             ],
             [
-              78.77,
+              78.786,
               16.11
             ]
           ]
         ]
       },
-      "cached_check_id": "001f5b79c134609f"
+      "cached_check_id": "964e0a055aee4c97",
+      "season": "Nov to Jan"
     },
     {
       "id": "nallamala-overlap",
       "name": "Overlapping claim",
       "place": "Nallamala hills, Andhra Pradesh, India",
       "expected": "AlreadyClaimed",
-      "description": "Half of this square overlaps the Nallamala sample. After that forest is registered on-chain, this one is refused.",
+      "description": "This square includes land already registered as project GP-1. The contract refuses it: the same land cannot be counted twice.",
       "zone": "tropical_dry_forest_asia",
       "before": [
-        "2025-01-01",
-        "2025-03-31"
+        "2024-11-01",
+        "2025-01-31"
       ],
       "after": [
-        "2026-01-01",
-        "2026-03-31"
+        "2025-11-01",
+        "2026-01-31"
       ],
       "boundary": {
         "type": "Polygon",
         "coordinates": [
           [
             [
-              78.778,
-              16.104
+              78.77333,
+              16.11741
             ],
             [
-              78.793,
-              16.104
+              78.78833,
+              16.11741
             ],
             [
-              78.793,
-              16.118
+              78.78833,
+              16.13141
             ],
             [
-              78.778,
-              16.118
+              78.77333,
+              16.13141
             ],
             [
-              78.778,
-              16.104
+              78.77333,
+              16.11741
             ]
           ]
         ]
@@ -109,29 +110,30 @@
         "coordinates": [
           [
             [
-              78.77,
+              78.786,
               16.11
             ],
             [
-              78.785,
+              78.801,
               16.11
             ],
             [
-              78.785,
+              78.801,
               16.124
             ],
             [
-              78.77,
+              78.786,
               16.124
             ],
             [
-              78.77,
+              78.786,
               16.11
             ]
           ]
         ]
       },
-      "cached_check_id": null
+      "cached_check_id": "880490bfa784e0a8",
+      "season": "early July"
     },
     {
       "id": "seshachalam",
@@ -141,12 +143,12 @@
       "description": "Protected dry deciduous forest in the Seshachalam hills. Expected: healthy forest.",
       "zone": "tropical_dry_forest_asia",
       "before": [
-        "2025-01-01",
-        "2025-03-31"
+        "2024-11-01",
+        "2025-01-31"
       ],
       "after": [
-        "2026-01-01",
-        "2026-03-31"
+        "2025-11-01",
+        "2026-01-31"
       ],
       "boundary": {
         "type": "Polygon",
@@ -175,7 +177,8 @@
           ]
         ]
       },
-      "cached_check_id": "3bc8bb53a0f309cf"
+      "cached_check_id": "e6331ad2d51dd506",
+      "season": "Nov to Jan"
     },
     {
       "id": "papikonda",
@@ -185,12 +188,12 @@
       "description": "Hill forest in Papikonda National Park beside the Godavari river. Expected: healthy forest.",
       "zone": "tropical_dry_forest_asia",
       "before": [
-        "2025-01-01",
-        "2025-03-31"
+        "2024-11-01",
+        "2025-01-31"
       ],
       "after": [
-        "2026-01-01",
-        "2026-03-31"
+        "2025-11-01",
+        "2026-01-31"
       ],
       "boundary": {
         "type": "Polygon",
@@ -219,7 +222,8 @@
           ]
         ]
       },
-      "cached_check_id": null
+      "cached_check_id": "40e68287992cc7ef",
+      "season": "Nov to Jan"
     },
     {
       "id": "cleared-forest",

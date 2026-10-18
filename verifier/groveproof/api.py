@@ -143,8 +143,11 @@ def check(req: CheckRequest):
     # 3. Live satellite check.
     try:
         payload = pipeline.check(boundary, tuple(before), tuple(after), zone)
-        if req.sample_id and not (s.get("cached_check_id") and pipeline.load_check(s["cached_check_id"])):
-            remember_sample_result(req.sample_id, payload["check_id"])   # next time this sample opens instantly
+        # Next time this sample opens instantly, but only if it shows what the sample promises,
+        # so one bad day of pictures is never saved as the sample's answer.
+        if (req.sample_id and payload["result"]["verdict"] == s.get("expected")
+                and not (s.get("cached_check_id") and pipeline.load_check(s["cached_check_id"]))):
+            remember_sample_result(req.sample_id, payload["check_id"])
         return payload
     except ValueError as e:
         raise HTTPException(422, str(e))

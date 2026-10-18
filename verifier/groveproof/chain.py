@@ -82,15 +82,36 @@ def project(project_id: int) -> dict:
 
 
 def project_cells(project_id: int) -> list[str]:
-    """Cells of a project, read from its ProjectRegistered event."""
+    """Cells of a project.
+
+    Fast path: the project's metadata names the saved check it came from, and that check lists
+    the cells; the contract then confirms every one of them belongs to this project.
+    Slow path: the ProjectRegistered event, searched newest blocks first in 9,000-block pieces
+    (public RPCs refuse bigger searches).
+    """
     w3, contract, _ = _web3()
-    logs = contract.events.ProjectRegistered().get_logs(
-        from_block=int(os.getenv("DEPLOY_BLOCK") or (_deployment() or {}).get("deployBlock", 0)),
-        argument_filters={"projectId": project_id},
-    )
-    if not logs:
-        raise ValueError(f"Project {project_id} not found")
-    return [str(c) for c in logs[0]["args"]["cells"]]
+    meta = contract.functions.getProject(project_id).call()[1]
+    parts = str(meta).split(":")
+    if len(parts) >= 2 and parts[0] == "groveproof":
+        try:
+            from . import pipeline
+            c = pipeline.load_check(parts[1])
+            if c and cells_match(project_id, c["cells"]):
+                return [str(x) for x in c["cells"]]
+        except Exception:
+            pass
+    start = int(os.getenv("DEPLOY_BLOCK") or (_deployment() or {}).get("deployBlock", 0))
+    latest = w3.eth.block_number
+    step = 9000
+    to = latest
+    while to >= start:
+        frm = max(start, to - step + 1)
+        logs = contract.events.ProjectRegistered().get_logs(
+            from_block=frm, to_block=to, argument_filters={"projectId": project_id})
+        if logs:
+            return [str(c) for c in logs[0]["args"]["cells"]]
+        to = frm - 1
+    raise ValueError(f"Project {project_id} not found")
 
 
 def cells_match(project_id: int, cells: list[str]) -> bool:

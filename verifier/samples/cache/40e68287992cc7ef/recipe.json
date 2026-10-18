@@ -1,0 +1,162 @@
+{
+  "recipe_version": 1,
+  "boundary": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          81.43,
+          17.47
+        ],
+        [
+          81.44500000000001,
+          17.47
+        ],
+        [
+          81.44500000000001,
+          17.485
+        ],
+        [
+          81.43,
+          17.485
+        ],
+        [
+          81.43,
+          17.47
+        ]
+      ]
+    ]
+  },
+  "h3_resolution": 9,
+  "cells": [
+    "618059016260288511",
+    "618710197738930175",
+    "618710197739192319",
+    "618710197739454463",
+    "618710197739716607",
+    "618710197739978751",
+    "618710197740240895",
+    "618710197740503039",
+    "618710197744435199",
+    "618710197747318783",
+    "618710197747580927",
+    "618710197748105215",
+    "618710197925576703",
+    "618710197926100991",
+    "618710197926625279",
+    "618710197926887423",
+    "618710197927149567",
+    "618710197933965311",
+    "618710197934227455",
+    "618710197934489599",
+    "618710197934751743",
+    "618710197935013887",
+    "618710197935538175"
+  ],
+  "windows": {
+    "before": [
+      "2024-11-01",
+      "2025-01-31"
+    ],
+    "after": [
+      "2025-11-01",
+      "2026-01-31"
+    ]
+  },
+  "scenes": {
+    "before": [
+      "S2A_MSIL2A_20241110T050031_R119_T44QNE_20241110T082750",
+      "S2A_MSIL2A_20241120T050111_R119_T44QNE_20241120T074845",
+      "S2A_MSIL2A_20241230T050221_R119_T44QNE_20241230T080646",
+      "S2A_MSIL2A_20250119T050121_R119_T44QNE_20250119T074856",
+      "S2B_MSIL2A_20241105T045909_R119_T44QNE_20241105T072318",
+      "S2B_MSIL2A_20241215T050129_R119_T44QNE_20241215T070856"
+    ],
+    "after": [
+      "S2A_MSIL2A_20260106T050241_R119_T44QNE_20260106T075612",
+      "S2B_MSIL2A_20251110T045929_R119_T44QNE_20251110T073214",
+      "S2B_MSIL2A_20251120T050019_R119_T44QNE_20251120T072045",
+      "S2B_MSIL2A_20251210T050119_R119_T44QNE_20251210T070549",
+      "S2C_MSIL2A_20251215T050231_R119_T44QNE_20251215T083410",
+      "S2C_MSIL2A_20251225T050231_R119_T44QNE_20251225T084813"
+    ]
+  },
+  "zone": "tropical_dry_forest_asia",
+  "config": {
+    "version": "rules-1.1",
+    "h3_resolution": 9,
+    "max_cells": 300,
+    "satellite": {
+      "collection": "sentinel-2-l2a",
+      "max_scene_cloud_pct": 60,
+      "max_scenes": 6,
+      "resolution_m": 10,
+      "clear_scl_classes": [
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    "forest": {
+      "forest_probability": 0.5,
+      "low_confidence_band": [
+        0.35,
+        0.65
+      ],
+      "min_ndvi_drop_for_loss": 0.1,
+      "ndvi_fallback_threshold": 0.6
+    },
+    "verdict": {
+      "min_clear_pct": 70,
+      "min_forest_cover_pct": 30,
+      "min_forest_ha": 1.0,
+      "not_eligible_loss_pct": 5.0,
+      "review_loss_pct": 2.0,
+      "max_low_confidence_pct": 20
+    },
+    "credits": {
+      "base_uncertainty_deduction": 0.2,
+      "extra_deduction_if_clear_below_90": 0.05,
+      "extra_deduction_if_low_conf_above_10": 0.05,
+      "max_uncertainty_deduction": 0.35,
+      "buffer_share": 0.1
+    }
+  },
+  "factors": {
+    "version": "factors-1.0",
+    "note": "Demo method based on IPCC default factors. NOT an official carbon standard. Every value below must be checked against the official IPCC document before the final submission; set verified to true only after checking.",
+    "verified": false,
+    "carbon_fraction": {
+      "value": 0.47,
+      "source": "IPCC 2006 Guidelines, Vol. 4 (AFOLU), Ch. 4, Table 4.3 (default carbon fraction of dry matter, 0.47)"
+    },
+    "co2_per_c": {
+      "value": 3.6666666667,
+      "source": "Molecular weight ratio 44/12"
+    },
+    "zones": {
+      "tropical_dry_forest_asia": {
+        "label": "Tropical dry forest, Asia",
+        "growth_t_dm_per_ha_yr": 2.0,
+        "growth_source": "IPCC 2019 Refinement, Vol. 4, Ch. 4, Table 4.9 (above-ground biomass growth, natural forest older than 20 years). CHECK VALUE.",
+        "root_shoot_ratio": 0.28,
+        "root_shoot_source": "IPCC 2019 Refinement, Vol. 4, Ch. 4, Table 4.4 (tropical dry forest, above-ground biomass over 20 t/ha). CHECK VALUE."
+      },
+      "tropical_moist_deciduous_asia": {
+        "label": "Tropical moist deciduous forest, Asia",
+        "growth_t_dm_per_ha_yr": 3.0,
+        "growth_source": "IPCC 2019 Refinement, Vol. 4, Ch. 4, Table 4.9. CHECK VALUE.",
+        "root_shoot_ratio": 0.24,
+        "root_shoot_source": "IPCC 2019 Refinement, Vol. 4, Ch. 4, Table 4.4. CHECK VALUE."
+      }
+    },
+    "default_zone": "tropical_dry_forest_asia"
+  },
+  "model": {
+    "name": "random_forest",
+    "version": "rf-1.0",
+    "sha256": "2b272c412a7652c67a0fab95811453a4fabad12ceef58b9c64c8eb3d2943b1c4"
+  },
+  "code_commit": "834f0a1107814c4ac1f03b31612e09eae0910fa3"
+}
