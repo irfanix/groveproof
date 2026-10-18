@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { recordOnChain } from "../lib/api";
-import { connectWallet, explainError, hasChain, makeMeta, sendTx } from "../lib/chain";
+import { connectWallet, explainError, gasFor, getProject, hasChain, makeMeta, reader, sendTx } from "../lib/chain";
 import TxSteps from "./TxSteps";
 
 const LABELS = ["Connect your wallet", "Register the land (map cells)", "Satellite verifier records the verdict", "Create the credits"];
@@ -29,25 +29,49 @@ export default function CreateCredits({ payload, name }) {
       const { contract, address } = await connectWallet();
       set(0, { status: "confirmed", note: `Connected as ${address.slice(0, 6)}…${address.slice(-4)}` });
 
+      // If this land was already registered by you (for example the page was refreshed half way), carry on from there.
       i = 1;
-      const receipt = await sendTx(
-        () => contract.registerProject(payload.cells.map((c) => BigInt(c)), makeMeta(payload.check_id, name)),
-        (st, tx) => set(1, { status: st, tx }),
-      );
-      const ev = receipt.logs.map((l) => { try { return contract.interface.parseLog(l); } catch { return null; } })
-        .find((e) => e?.name === "ProjectRegistered");
-      const pid = Number(ev.args.projectId);
+      let pid = Number(await reader().cellProject(BigInt(payload.cells[0])));
+      let project = pid ? await getProject(pid) : null;
+      if (project && project.owner.toLowerCase() === address.toLowerCase()) {
+        set(1, { status: "confirmed", note: `Already registered as project GP-${pid}` });
+      } else {
+        const regArgs = [payload.cells.map((c) => BigInt(c)), makeMeta(payload.check_id, name)];
+        const regGas = await gasFor("registerProject", regArgs, address);
+        const receipt = await sendTx(
+          () => contract.registerProject(...regArgs, regGas),
+          (st, tx) => set(1, { status: st, tx }),
+        );
+        const ev = receipt.logs.map((l) => { try { return contract.interface.parseLog(l); } catch { return null; } })
+          .find((e) => e?.name === "ProjectRegistered");
+        pid = Number(ev.args.projectId);
+        set(1, { note: `Registered as project GP-${pid}, ${payload.cells.length} map cells` });
+        project = null;
+      }
       setProjectId(pid);
-      set(1, { note: `Registered as project GP-${pid}, ${payload.cells.length} map cells` });
 
       i = 2;
-      set(2, { status: "working" });
-      const rec = await recordOnChain(pid, payload.check_id);
-      set(2, { status: "confirmed", tx: rec.tx, note: `Verdict ${rec.verdict}, at most ${rec.max_credits} credits` });
+      if (project?.verdict === "Verified" && project.maxCredits > 0) {
+        set(2, { status: "confirmed", note: `Already recorded: Verified, at most ${project.maxCredits} credits` });
+      } else {
+        set(2, { status: "working" });
+        const rec = await recordOnChain(pid, payload.check_id);
+        set(2, { status: "confirmed", tx: rec.tx || undefined, note: `Verdict ${rec.verdict}, at most ${rec.max_credits} credits` });
+      }
 
       i = 3;
-      await sendTx(() => contract.issueCredits(pid, credits), (st, tx) => set(3, { status: st, tx }));
-      set(3, { note: `${credits} credits created` });
+      project = await getProject(pid);
+      // MetaMask's own network node can be a few seconds behind ours; give it time to see the verdict.
+      await new Promise((r) => setTimeout(r, 6000));
+      const left = project.maxCredits - project.issued;
+      if (left <= 0) {
+        set(3, { status: "confirmed", note: `${project.issued} credits already created` });
+      } else {
+        const amount = Math.min(credits, left);
+        const gas = await gasFor("issueCredits", [pid, amount], address);
+        await sendTx(() => contract.issueCredits(pid, amount, gas), (st, tx) => set(3, { status: st, tx }));
+        set(3, { note: `${amount} credits created` });
+      }
     } catch (e) {
       const msg = e.message && !e.code && !e.data && !e.revert ? e.message : explainError(e).text;
       set(i, { status: "failed", note: msg });

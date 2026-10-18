@@ -16,6 +16,7 @@ Endpoints
 from __future__ import annotations
 
 import json
+import logging
 import threading
 import shutil
 import os
@@ -34,6 +35,7 @@ from .rerun import rerun
 from .settings import SAMPLES_DIR, config
 
 load_dotenv()
+log = logging.getLogger("groveproof")
 
 app = FastAPI(title="GroveProof verifier", version="1.0")
 app.add_middleware(
@@ -214,12 +216,31 @@ def record(project_id: int, check_id: str):
     c = pipeline.load_check(check_id)
     if not c:
         raise HTTPException(404, "Check not found")
-    if not chain.cells_match(project_id, c["cells"]):
-        raise HTTPException(409, "This project's land does not match the checked land")
     r = c["result"]
-    tx = chain.record_verification(project_id, r["verdict"], r["credits"]["credits"],
-                                   c["recipe_hash"], c["result_hash"])
+    try:
+        if not chain.cells_match(project_id, c["cells"]):
+            raise HTTPException(409, "This project's land does not match the checked land")
+        # Already recorded (for example the page was refreshed half way): do not send it twice.
+        p = chain.project(project_id)
+        if p["resultHash"].lower() == c["result_hash"].lower() and int(p["verdict"]) == chain.VERDICT_CODE[r["verdict"]]:
+            return {"tx": None, "verdict": r["verdict"], "max_credits": int(p["maxCredits"]), "already": True}
+        tx = chain.record_verification(project_id, r["verdict"], r["credits"]["credits"],
+                                       c["recipe_hash"], c["result_hash"])
+    except HTTPException:
+        raise
+    except Exception as e:  # return a readable reason instead of a bare 500 the browser cannot read
+        log.exception("record failed")
+        raise HTTPException(502, f"The verifier could not write to the blockchain: {_reason(e)}")
     return {"tx": tx, "verdict": r["verdict"], "max_credits": r["credits"]["credits"]}
+
+
+def _reason(e: Exception) -> str:
+    text = str(e)
+    if "insufficient funds" in text:
+        return "the Verifier wallet needs a little more test POL for fees."
+    if "timeout" in text.lower() or "timed out" in text.lower():
+        return "the network was slow. Please press Create credits again."
+    return text[:300] or e.__class__.__name__
 
 
 @app.post("/api/recheck/{project_id}")

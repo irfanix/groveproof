@@ -29,6 +29,13 @@ def _deployment() -> dict | None:
 def _web3():
     from web3 import Web3
     w3 = Web3(Web3.HTTPProvider(os.environ["RPC_URL"], request_kwargs={"timeout": 60}))
+    # Polygon blocks carry extra signer data; without this web3 refuses to read them.
+    try:
+        from web3.middleware import ExtraDataToPOAMiddleware
+        w3.middleware_onion.inject(ExtraDataToPOAMiddleware, layer=0)
+    except ImportError:  # web3 6
+        from web3.middleware import geth_poa_middleware
+        w3.middleware_onion.inject(geth_poa_middleware, layer=0)
     d = _deployment()
     contract = w3.eth.contract(address=Web3.to_checksum_address(d["address"]), abi=d["abi"])
     account = w3.eth.account.from_key(os.environ["VERIFIER_PRIVATE_KEY"])

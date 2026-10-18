@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ForestBadge, VerdictBadge } from "../components/Verdict";
-import { connectWallet, deployment, explainError, hasChain, listProjects, parseMeta, priceText, reader, sendTx, short, txUrl } from "../lib/chain";
+import { connectWallet, deployment, explainError, gasFor, hasChain, listProjects, parseMeta, priceText, reader, sendTx, short, txUrl } from "../lib/chain";
 
 function ProjectCard({ p, wallet, onChanged }) {
   const [amount, setAmount] = useState(1);
@@ -17,7 +17,13 @@ function ProjectCard({ p, wallet, onChanged }) {
       const c = wallet.contract;
       const n = BigInt(amount);
       const receipt = await sendTx(
-        () => kind === "buy" ? c.buy(p.id, n, { value: n * BigInt(deployment.pricePerCreditWei) }) : c.retire(p.id, n, who.trim()),
+        async () => {
+          if (kind === "buy") {
+            const value = n * BigInt(deployment.pricePerCreditWei);
+            return c.buy(p.id, n, await gasFor("buy", [p.id, n], wallet.address, value));
+          }
+          return c.retire(p.id, n, who.trim(), await gasFor("retire", [p.id, n, who.trim()], wallet.address));
+        },
         (st) => setState((s) => ({ ...s, msg: st === "sending" ? "Sending…" : "Confirmed" })),
       );
       let cert = null;

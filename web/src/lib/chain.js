@@ -26,14 +26,38 @@ export const priceText = () => (deployment ? `${formatEther(deployment.pricePerC
 
 // ------------------------------------------------------------------ wallet
 
+// Talk to MetaMask directly so its own error codes reach us (ethers hides some as "could not coalesce error").
+async function ask(method, params = []) {
+  try {
+    return await window.ethereum.request({ method, params });
+  } catch (e) {
+    throw walletError(e);
+  }
+}
+
+function walletError(e) {
+  const code = e?.code ?? e?.error?.code;
+  const msg = String(e?.message || e?.error?.message || "");
+  if (code === 4001) return Object.assign(new Error("You cancelled this in MetaMask."), { code: 4001 });
+  if (code === -32002 || msg.includes("already pending"))
+    return new Error("MetaMask is already waiting for you. Click the fox icon at the top right of Chrome, answer the open request (or unlock MetaMask), then try again.");
+  if (code === -32603 || msg.includes("Internal JSON-RPC")) {
+    const d = e?.data || e?.error?.data || {};
+    const detail = d.message || d.originalError?.message || d.cause?.message || "";
+    return new Error("MetaMask's connection to Amoy refused this. In MetaMask, edit the Amoy network and choose the RPC URL https://polygon-amoy-bor-rpc.publicnode.com, then try again."
+      + (detail ? ` (MetaMask said: ${detail})` : ""));
+  }
+  return new Error(msg || "MetaMask could not connect. Please try again.");
+}
+
 export async function connectWallet() {
   if (!window.ethereum) throw new Error("Please install MetaMask to create, buy or retire credits. You can still look at everything without it.");
-  const provider = new BrowserProvider(window.ethereum);
-  await provider.send("eth_requestAccounts", []);
-  const net = await provider.getNetwork();
-  if (Number(net.chainId) !== CHAIN_ID) await switchNetwork();
-  const p2 = new BrowserProvider(window.ethereum);
-  const signer = await p2.getSigner();
+  const accounts = await ask("eth_requestAccounts");
+  if (!accounts?.length) throw new Error("MetaMask did not share an account. Open MetaMask, unlock it and try again.");
+  const chainHex = await ask("eth_chainId");
+  if (parseInt(chainHex, 16) !== CHAIN_ID) await switchNetwork();
+  const provider = new BrowserProvider(window.ethereum, "any");
+  const signer = await provider.getSigner(accounts[0]);
   return { signer, address: await signer.getAddress(), contract: new Contract(deployment.address, deployment.abi, signer) };
 }
 
@@ -42,12 +66,12 @@ async function switchNetwork() {
   try {
     await window.ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: hex }] });
   } catch (e) {
-    if (e.code !== 4902) throw new Error("Please switch MetaMask to the Polygon Amoy test network.");
-    await window.ethereum.request({
-      method: "wallet_addEthereumChain",
-      params: [{ chainId: hex, chainName: "Polygon Amoy (test)", rpcUrls: [RPC_URL],
-                 nativeCurrency: { name: "POL", symbol: "POL", decimals: 18 }, blockExplorerUrls: [EXPLORER] }],
-    });
+    if (e?.code !== 4902) {
+      if (e?.code === 4001 || e?.code === -32002) throw walletError(e);
+      throw new Error("Please switch MetaMask to the Polygon Amoy test network.");
+    }
+    await ask("wallet_addEthereumChain", [{ chainId: hex, chainName: "Polygon Amoy (test)", rpcUrls: [RPC_URL],
+      nativeCurrency: { name: "POL", symbol: "POL", decimals: 18 }, blockExplorerUrls: [EXPLORER] }]);
   }
 }
 
@@ -118,7 +142,9 @@ export async function projectHistory(projectId) {
 
 export function explainError(err) {
   const c = deployment ? new Contract(deployment.address, deployment.abi) : null;
-  const data = err?.data || err?.info?.error?.data || err?.error?.data || err?.revert?.data;
+  const inner = err?.error?.data;
+  const data = err?.data || err?.info?.error?.data || inner?.data || inner?.originalError?.data
+    || (typeof inner === "string" ? inner : null) || err?.revert?.data;
   let parsed = err?.revert ? { name: err.revert.name, args: err.revert.args } : null;
   if (!parsed && c && data) {
     try { parsed = c.interface.parseError(typeof data === "string" ? data : data.data); } catch { /* not ours */ }
@@ -126,6 +152,7 @@ export function explainError(err) {
   if (!parsed) {
     if (err?.code === "ACTION_REJECTED" || err?.code === 4001) return { name: "Cancelled", text: "You cancelled this in MetaMask." };
     if (String(err?.message || "").includes("insufficient funds")) return { name: "NoTestCoins", text: "Your wallet needs a little test POL for fees. Get some free from the Polygon Amoy faucet." };
+    if (err?.code === "UNKNOWN_ERROR" && err?.error) return { name: "Wallet", text: walletError(err.error).message };
     return { name: "Error", text: err?.shortMessage || err?.message || "Something went wrong." };
   }
   const a = Array.from(parsed.args || []); // plain array: reading a missing index must not throw
@@ -146,6 +173,20 @@ export function explainError(err) {
     ZeroAmount: "Please enter at least 1 credit.",
   };
   return { name: parsed.name, text: texts[parsed.name] || `Refused by the contract (${parsed.name}).` };
+}
+
+// Check a transaction on our own node first and set the gas ourselves.
+// If the contract would refuse, this throws the real reason before MetaMask opens.
+// It also avoids a failed transaction when MetaMask's node is a few blocks behind.
+export async function gasFor(method, args, from, value) {
+  const overrides = value ? { from, value } : { from };
+  const c = reader();
+  const [est, block] = await Promise.all([c[method].estimateGas(...args, overrides), c.runner.getBlock("latest")]);
+  // Polygon refuses tips under 25 gwei; MetaMask sometimes offers less on test networks.
+  const tip = 35n * 10n ** 9n;
+  const base = block?.baseFeePerGas || 0n;
+  const out = { gasLimit: (est * 13n) / 10n + 20000n, maxPriorityFeePerGas: tip, maxFeePerGas: base * 2n + tip };
+  return value ? { ...out, value } : out;
 }
 
 // Send a transaction and report each stage: "wallet" -> "sending" -> "confirmed".
