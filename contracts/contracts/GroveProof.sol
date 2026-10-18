@@ -4,7 +4,7 @@ pragma solidity ^0.8.24;
 /*
  * GroveProof: satellite-verified forest carbon credits.
  *
- * "Satellites verify. The contract decides. No credit counts twice."
+ * Forest carbon credits that can only be created after a satellite check, for land registered once.
  *
  * Simple idea:
  *  - A forest project is a list of H3 map cells (resolution 9, about 0.1 km2 each).

@@ -1,8 +1,8 @@
 # GroveProof
 
-**Satellites verify. The contract decides. No credit counts twice.**
+**Forest carbon credits, checked from space before they are sold.**
 
-GroveProof checks a forest with satellites, and a smart contract only creates carbon credits for what the satellites clearly show: no land counted twice, no credits for vanished forests, and every check anyone can re-run.
+GroveProof looks at free satellite pictures of a forest and works out how much of it is really there. Only then can a smart contract create carbon credits. The same land can only be registered once, credits from a forest that is later cut down get frozen, and anyone can run a check again to see if they get the same answer.
 
 Built for the IEEE ClimateChain Global Hackathon, Track 1: Carbon Markets & Emissions Transparency.
 
@@ -22,11 +22,11 @@ Built for the IEEE ClimateChain Global Hackathon, Track 1: Carbon Markets & Emis
 
 1. **Already claimed (land-level double counting).** Every forest boundary becomes H3 map cells (resolution 9, about 0.1 km² each). The contract stores which project owns each cell and refuses any new project that overlaps.
 2. **Living credits.** A new satellite check compares newer pictures with the last one. If 5% or more of the forest is gone, the contract **freezes** the remaining credits: they can no longer be created, bought, moved or retired. Credits retired earlier stay retired.
-3. **Re-run this check.** Every check saves a recipe (boundary, exact satellite scene ids, dates, rules, carbon factors, model hash, code version). `keccak256(recipe)` and `keccak256(result)` go on-chain. Anyone can re-run it and compare. **Don't trust us. Re-run it.**
+3. **Re-run this check.** Every check saves a recipe (boundary, exact satellite scene ids, dates, rules, carbon factors, model hash, code version). `keccak256(recipe)` and `keccak256(result)` go on-chain. Anyone can run it again and compare the result with what is on the blockchain.
 
-Plus one rule: **when unsure, credit less.** Credits are reduced by an uncertainty deduction (20 to 35%) and a 10% buffer, cloudy land is never counted, and weak evidence becomes *Needs review*, never *Verified*.
+When the data is unclear, GroveProof gives fewer credits, not more. Credits are reduced by an uncertainty deduction (20 to 35%) and a 10% buffer, cloudy land is never counted, and weak evidence becomes *Needs review*, never *Verified*.
 
-Design rule: **AI explains. Code counts. The contract decides.** Every number comes from code. The language model only rewrites the numbers in plain words, and a guard throws its text away if it contains any number that is not in the result.
+How AI is used: every number comes from code, not from AI. A language model only writes a short explanation of the result, and a guard throws its text away if it contains any number that is not in the result.
 
 ---
 

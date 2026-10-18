@@ -1,0 +1,159 @@
+{
+  "check_id": "3bc8bb53a0f309cf",
+  "result": {
+    "verdict": "NotEligible",
+    "reason": "Satellites show 29.99 ha of tree loss, 11.3% of the forest (the limit is 5.0%).",
+    "numbers": {
+      "area_ha": 269.09,
+      "clear_pct": 98.9,
+      "forest_before_ha": 265.51,
+      "forest_after_ha": 234.92,
+      "forest_cover_after_pct": 87.3,
+      "loss_ha": 29.99,
+      "loss_pct": 11.3,
+      "low_confidence_pct": 29.6,
+      "mean_ndvi_before": 0.676,
+      "mean_ndvi_after": 0.52,
+      "method": "random_forest"
+    },
+    "credits": {
+      "zone": "tropical_dry_forest_asia",
+      "zone_label": "Tropical dry forest, Asia",
+      "forest_ha_used": 234.92,
+      "growth_t_dm_per_ha_yr": 2.0,
+      "root_shoot_ratio": 0.28,
+      "carbon_fraction": 0.47,
+      "annual_co2_t": 1036.4,
+      "uncertainty_deduction": 0.25,
+      "buffer_share": 0.1,
+      "credits": 0,
+      "factors_verified": false
+    },
+    "recipe_hash": "0x3bc8bb53a0f309cf9654cc900b483be36560de1ac5a66837768c57bb69fd419e"
+  },
+  "result_hash": "0xc2346cdaf65981767f83daca6d471e7ce9fdf1b25d9f9646a523a28f9d347e12",
+  "recipe_hash": "0x3bc8bb53a0f309cf9654cc900b483be36560de1ac5a66837768c57bb69fd419e",
+  "explanation": {
+    "text": "Result: Not eligible. Satellites show 29.99 ha of tree loss, 11.3% of the forest (the limit is 5.0%).",
+    "source": "template",
+    "note": "No AI model is connected, so the standard explanation was used."
+  },
+  "timings": [
+    {
+      "label": "Finding satellite images",
+      "seconds": 4.5
+    },
+    {
+      "label": "Downloading pictures and removing clouds (before and after together)",
+      "seconds": 32.8
+    },
+    {
+      "label": "Mapping forest and comparing",
+      "seconds": 0.2
+    },
+    {
+      "label": "Calculating credits",
+      "seconds": 0.0
+    },
+    {
+      "label": "Writing the explanation",
+      "seconds": 0.0
+    }
+  ],
+  "cells": [
+    "618709123283025919",
+    "618709123340697599",
+    "618709123340959743",
+    "618709123341221887",
+    "618709123341484031",
+    "618709123341746175",
+    "618709123342008319",
+    "618709123342270463",
+    "618709123342794751",
+    "618709123343319039",
+    "618709123343843327",
+    "618709123344105471",
+    "618709123344367615",
+    "618709123345154047",
+    "618709123346202623",
+    "618709123347251199",
+    "618709123348037631",
+    "618709123348299775",
+    "618709123349086207",
+    "618709123349872639",
+    "618709123351183359",
+    "618709123351707647",
+    "618709123351969791",
+    "618709123352756223",
+    "618709123371630591"
+  ],
+  "boundary": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          79.205,
+          13.805
+        ],
+        [
+          79.22,
+          13.805
+        ],
+        [
+          79.22,
+          13.82
+        ],
+        [
+          79.205,
+          13.82
+        ],
+        [
+          79.205,
+          13.805
+        ]
+      ]
+    ]
+  },
+  "windows": {
+    "before": [
+      "2025-01-01",
+      "2025-03-31"
+    ],
+    "after": [
+      "2026-01-01",
+      "2026-03-31"
+    ]
+  },
+  "scenes": {
+    "before": [
+      "S2B_MSIL2A_20250206T050909_R019_T44PKA_20250206T071445",
+      "S2B_MSIL2A_20250216T050809_R019_T44PKA_20250216T073441",
+      "S2B_MSIL2A_20250216T050809_R019_T44PLA_20250216T073441",
+      "S2B_MSIL2A_20250308T050659_R019_T44PKA_20250308T072151",
+      "S2C_MSIL2A_20250211T051001_R019_T44PKA_20250211T102211",
+      "S2C_MSIL2A_20250221T050851_R019_T44PKA_20250221T120413"
+    ],
+    "after": [
+      "S2B_MSIL2A_20260303T050649_R019_T44PKA_20260303T101734",
+      "S2B_MSIL2A_20260303T050649_R019_T44PLA_20260303T101734",
+      "S2B_MSIL2A_20260323T050649_R019_T44PKA_20260323T091003",
+      "S2C_MSIL2A_20260117T051141_R019_T44PKA_20260117T081509",
+      "S2C_MSIL2A_20260308T050651_R019_T44PKA_20260308T101312",
+      "S2C_MSIL2A_20260328T050651_R019_T44PLA_20260328T102419"
+    ]
+  },
+  "model": {
+    "name": "random_forest",
+    "version": "rf-1.0",
+    "sha256": "2b272c412a7652c67a0fab95811453a4fabad12ceef58b9c64c8eb3d2943b1c4"
+  },
+  "rules": {
+    "min_clear_pct": 70,
+    "min_forest_cover_pct": 30,
+    "min_forest_ha": 1.0,
+    "not_eligible_loss_pct": 5.0,
+    "review_loss_pct": 2.0,
+    "max_low_confidence_pct": 20
+  },
+  "checked_at": "2026-10-18 06:51 UTC"
+}

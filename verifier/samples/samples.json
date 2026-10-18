@@ -43,7 +43,7 @@
           ]
         ]
       },
-      "cached_check_id": "2a8c42e4543bdcd3"
+      "cached_check_id": null
     },
     {
       "id": "nallamala-overlap",
@@ -131,7 +131,95 @@
           ]
         ]
       },
-      "cached_check_id": "c4ec06a801f406e7"
+      "cached_check_id": null
+    },
+    {
+      "id": "seshachalam",
+      "name": "Seshachalam hills forest",
+      "place": "Sri Venkateswara National Park, near Talakona, Andhra Pradesh, India",
+      "expected": "Verified",
+      "description": "Protected dry deciduous forest in the Seshachalam hills. Expected: healthy forest.",
+      "zone": "tropical_dry_forest_asia",
+      "before": [
+        "2025-01-01",
+        "2025-03-31"
+      ],
+      "after": [
+        "2026-01-01",
+        "2026-03-31"
+      ],
+      "boundary": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              79.205,
+              13.805
+            ],
+            [
+              79.22,
+              13.805
+            ],
+            [
+              79.22,
+              13.82
+            ],
+            [
+              79.205,
+              13.82
+            ],
+            [
+              79.205,
+              13.805
+            ]
+          ]
+        ]
+      },
+      "cached_check_id": "3bc8bb53a0f309cf"
+    },
+    {
+      "id": "papikonda",
+      "name": "Papikonda hills forest",
+      "place": "Papikonda National Park, along the Godavari, Andhra Pradesh, India",
+      "expected": "Verified",
+      "description": "Hill forest in Papikonda National Park beside the Godavari river. Expected: healthy forest.",
+      "zone": "tropical_dry_forest_asia",
+      "before": [
+        "2025-01-01",
+        "2025-03-31"
+      ],
+      "after": [
+        "2026-01-01",
+        "2026-03-31"
+      ],
+      "boundary": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              81.43,
+              17.47
+            ],
+            [
+              81.44500000000001,
+              17.47
+            ],
+            [
+              81.44500000000001,
+              17.485
+            ],
+            [
+              81.43,
+              17.485
+            ],
+            [
+              81.43,
+              17.47
+            ]
+          ]
+        ]
+      },
+      "cached_check_id": null
     },
     {
       "id": "cleared-forest",

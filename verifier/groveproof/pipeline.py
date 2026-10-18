@@ -13,6 +13,7 @@ import json
 import os
 import subprocess
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import numpy as np
@@ -63,8 +64,10 @@ def build_recipe(boundary: dict, before: tuple[str, str], after: tuple[str, str]
     cfg, fac = config(), factors()
     timer = timer or Timer()
     with timer.step("Finding satellite images"):
-        scenes_before = satellite.find_scenes(boundary, before, cfg["satellite"])
-        scenes_after = satellite.find_scenes(boundary, after, cfg["satellite"])
+        with ThreadPoolExecutor(2) as ex:   # search both date windows at the same time
+            fb = ex.submit(satellite.find_scenes, boundary, before, cfg["satellite"])
+            fa = ex.submit(satellite.find_scenes, boundary, after, cfg["satellite"])
+            scenes_before, scenes_after = fb.result(), fa.result()
     _, model_info = load_model()
     return {
         "recipe_version": RECIPE_VERSION,
@@ -95,10 +98,12 @@ def run_recipe(recipe: dict, loader=None, model=None, timer: Timer | None = None
         if info["sha256"] != recipe["model"]["sha256"]:
             raise RuntimeError("This recipe needs a different forest model file (hash does not match)")
 
-    with timer.step("Removing clouds (before)"):
-        comp_before, rgb_before = loader(recipe["boundary"], recipe["scenes"]["before"])
-    with timer.step("Removing clouds (after)"):
-        comp_after, rgb_after = loader(recipe["boundary"], recipe["scenes"]["after"])
+    with timer.step("Downloading pictures and removing clouds (before and after together)"):
+        with ThreadPoolExecutor(2) as ex:   # download both date windows at the same time
+            fb = ex.submit(loader, recipe["boundary"], recipe["scenes"]["before"])
+            fa = ex.submit(loader, recipe["boundary"], recipe["scenes"]["after"])
+            comp_before, rgb_before = fb.result()
+            comp_after, rgb_after = fa.result()
     with timer.step("Mapping forest and comparing"):
         a = analysis.analyze(comp_before, comp_after, cfg, model)
     with timer.step("Calculating credits"):
@@ -149,9 +154,11 @@ def save_check(result: dict, recipe: dict, extras: dict, explanation: dict) -> d
         "explanation": explanation,
         "timings": extras["timer"].steps,
         "cells": recipe["cells"],
+        "boundary": recipe["boundary"],
         "windows": recipe["windows"],
         "scenes": recipe["scenes"],
         "model": recipe["model"],
+        "rules": recipe["config"]["verdict"],
         "checked_at": time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime()),
     }
     (folder / "payload.json").write_text(json.dumps(payload, indent=2))

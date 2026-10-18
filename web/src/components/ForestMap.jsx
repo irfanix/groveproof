@@ -21,7 +21,7 @@ export default function ForestMap({ samples = [], selectedId, onSelectSample, on
     layers.current.cells = L.layerGroup().addTo(m);
 
     const draw = new L.Control.Draw({
-      draw: { polygon: { shapeOptions: { color: "#7FC29B", weight: 3 } }, rectangle: { shapeOptions: { color: "#7FC29B", weight: 3 } },
+      draw: { polygon: { shapeOptions: { color: "#7FC29B", weight: 3 } }, rectangle: { showArea: false, shapeOptions: { color: "#7FC29B", weight: 3 } }, // showArea off: leaflet-draw has a bug ("type is not defined") in its area label
               polyline: false, circle: false, marker: false, circlemarker: false },
       edit: { featureGroup: layers.current.drawn, edit: false, remove: true },
     });

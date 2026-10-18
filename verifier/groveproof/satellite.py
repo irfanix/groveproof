@@ -19,6 +19,17 @@ from shapely.ops import transform as shp_transform
 from .analysis import BANDS, Composite
 
 STAC_URL = "https://planetarycomputer.microsoft.com/api/stac/v1"
+LOAD_THREADS = 16  # pictures are read over the internet in parallel; this is the main speed-up
+_rio_ready = False
+
+
+def _fast_reads():
+    """GDAL settings for reading cloud-optimised pictures quickly (fewer, bigger web requests)."""
+    global _rio_ready
+    if not _rio_ready:
+        import odc.stac
+        odc.stac.configure_rio(cloud_defaults=True)
+        _rio_ready = True
 
 
 def _client():
@@ -53,6 +64,7 @@ def load_composite(geometry: dict, scene_ids: list[str], scfg: dict) -> tuple[Co
     """
     import odc.stac
 
+    _fast_reads()
     geom = shape(geometry)
     c = geom.centroid
     epsg = utm_epsg(c.x, c.y)
@@ -80,6 +92,7 @@ def load_composite(geometry: dict, scene_ids: list[str], scfg: dict) -> tuple[Co
         bbox=geom.bounds,
         groupby="solar_day",
         resampling={"SCL": "nearest", "*": "bilinear"},
+        pool=LOAD_THREADS,
     )
 
     scl = ds["SCL"].values  # (time, rows, cols)

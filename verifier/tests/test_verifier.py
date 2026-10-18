@@ -254,3 +254,23 @@ def test_explain_falls_back_to_template_without_api_key(monkeypatch):
     monkeypatch.delenv("LLM_API_KEY", raising=False)
     out = explain(sample_result())
     assert out["source"] == "template"
+
+
+def test_explain_note_says_why_text_was_replaced(monkeypatch):
+    import groveproof.explain as ex
+    r = sample_result()
+    monkeypatch.setenv("LLM_API_KEY", "x")
+
+    class FakeResp:
+        def __init__(self, text): self.text = text
+        def raise_for_status(self): pass
+        def json(self): return {"choices": [{"message": {"content": self.text}}]}
+
+    monkeypatch.setattr(ex.httpx, "post", lambda *a, **k: FakeResp("This forest stores 999999 tonnes."))
+    out = ex.explain(r)
+    assert out["source"] == "template" and "999999" in out["note"]
+
+    good = f"The forest covers {r['numbers']['forest_after_ha']} ha."
+    monkeypatch.setattr(ex.httpx, "post", lambda *a, **k: FakeResp(good))
+    out = ex.explain(r)
+    assert out["source"] == "ai" and "1 numbers" in out["note"]

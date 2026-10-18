@@ -134,7 +134,7 @@ export default function Credits() {
       {projects?.length === 0 && (
         <div className="panel p-6">
           <p className="font-bold">No forests registered yet.</p>
-          <Link to="/" className="btn-main mt-3">Check a forest</Link>
+          <Link to="/check" className="btn-main mt-3">Check a forest</Link>
         </div>
       )}
       {mineFirst?.map((p) => <ProjectCard key={p.id} p={p} wallet={wallet} onChanged={load} />)}

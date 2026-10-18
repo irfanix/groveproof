@@ -54,13 +54,19 @@ def allowed_numbers(result: dict) -> set[float]:
     return found
 
 
-def numbers_ok(text: str, result: dict) -> bool:
+def unknown_numbers(text: str, result: dict) -> list[str]:
+    """Numbers in the text that do not appear in the result."""
     allowed = allowed_numbers(result)
+    bad = []
     for m in NUM_RE.findall(text):
         v = float(m.replace(",", ""))
         if v not in allowed and round(v, 2) not in allowed:
-            return False
-    return True
+            bad.append(m)
+    return bad
+
+
+def numbers_ok(text: str, result: dict) -> bool:
+    return not unknown_numbers(text, result)
 
 
 def template(result: dict) -> str:
@@ -75,11 +81,12 @@ def template(result: dict) -> str:
 
 
 def explain(result: dict) -> dict:
-    """Returns {"text": ..., "source": "ai" | "template"}."""
-    fallback = {"text": template(result), "source": "template"}
+    """Returns {"text", "source": "ai" | "template", "note"}. The note says why, for the audit trail."""
+    def fallback(note):
+        return {"text": template(result), "source": "template", "note": note}
     key = os.getenv("LLM_API_KEY")
     if not key:
-        return fallback
+        return fallback("No AI model is connected, so the standard explanation was used.")
     base = os.getenv("LLM_BASE_URL", "https://api.groq.com/openai/v1")
     model = os.getenv("LLM_MODEL", "llama-3.1-8b-instant")
     facts = {
@@ -104,7 +111,13 @@ def explain(result: dict) -> dict:
         r.raise_for_status()
         text = r.json()["choices"][0]["message"]["content"].strip()
     except Exception:
-        return fallback
-    if not text or not numbers_ok(text, result) or re.search(r"\b(fake|fraud)\b", text, re.I):
-        return fallback
-    return {"text": text, "source": "ai"}
+        return fallback("The AI model did not answer, so the standard explanation was used.")
+    if not text:
+        return fallback("The AI model returned no text, so the standard explanation was used.")
+    bad = unknown_numbers(text, result)
+    if bad:
+        return fallback(f"AI text removed: it contained {', '.join(bad[:3])}, which is not in the satellite result.")
+    if re.search(r"\b(fake|fraud)\b", text, re.I):
+        return fallback("AI text removed: it used an accusing word. GroveProof never calls anyone fake.")
+    n = len(NUM_RE.findall(text))
+    return {"text": text, "source": "ai", "note": f"AI text kept: all {n} numbers in it were checked against the result."}

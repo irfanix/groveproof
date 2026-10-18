@@ -1,0 +1,31 @@
+{
+  "verdict": "NeedsReview",
+  "reason": "The forest map is unsure about 36.7% of the area, so a person should take a look.",
+  "numbers": {
+    "area_ha": 248.8,
+    "clear_pct": 100.0,
+    "forest_before_ha": 174.14,
+    "forest_after_ha": 197.62,
+    "forest_cover_after_pct": 79.4,
+    "loss_ha": 0.0,
+    "loss_pct": 0.0,
+    "low_confidence_pct": 36.7,
+    "mean_ndvi_before": 0.4,
+    "mean_ndvi_after": 0.44,
+    "method": "random_forest"
+  },
+  "credits": {
+    "zone": "tropical_dry_forest_asia",
+    "zone_label": "Tropical dry forest, Asia",
+    "forest_ha_used": 197.62,
+    "growth_t_dm_per_ha_yr": 2.0,
+    "root_shoot_ratio": 0.28,
+    "carbon_fraction": 0.47,
+    "annual_co2_t": 871.85,
+    "uncertainty_deduction": 0.25,
+    "buffer_share": 0.1,
+    "credits": 0,
+    "factors_verified": false
+  },
+  "recipe_hash": "0xae786d80d1f5841b050b4c909dcab474e91a885b55489f5e7766d7b678860d89"
+}

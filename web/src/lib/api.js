@@ -27,3 +27,13 @@ export const recheck = (projectId, body) =>
   call(`/api/recheck/${projectId}`, { method: "POST", body: JSON.stringify(body) });
 export const rerunCheck = (checkId) => call(`/api/rerun/${checkId}`, { method: "POST" });
 export const fileUrl = (checkId, name) => `${API}/api/checks/${checkId}/${name}`;
+
+// Evidence, human review and the assistant
+export const getEvidence = (projectId, checkId) =>
+  call(`/api/evidence/${projectId}${checkId ? `?check_id=${encodeURIComponent(checkId)}` : ""}`);
+export const addEvidence = (projectId, body) => call(`/api/evidence/${projectId}`, { method: "POST", body: JSON.stringify(body) });
+export const addClaim = (projectId, body) => call(`/api/evidence/${projectId}/claims`, { method: "POST", body: JSON.stringify(body) });
+export const addReview = (projectId, body) => call(`/api/evidence/${projectId}/review`, { method: "POST", body: JSON.stringify(body) });
+export const getReviewQueue = () => call("/api/review-queue");
+export const evidenceFileUrl = (projectId, file) => `${API}/api/evidence/${projectId}/file/${encodeURIComponent(file)}`;
+export const askAssistant = (question, facts) => call("/api/assistant", { method: "POST", body: JSON.stringify({ question, facts }) });

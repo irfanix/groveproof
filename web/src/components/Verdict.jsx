@@ -1,3 +1,4 @@
+import { Icon } from "./Icon";
 // Verdict names, colours and icons. Colour is never used alone: always icon + words.
 export const VERDICTS = {
   Verified: { label: "Verified", icon: "✓", color: "text-leaf", bg: "bg-leaf", ring: "border-leaf",
@@ -18,11 +19,17 @@ export function Hex({ className = "", children }) {
   return <span className={`hex inline-flex items-center justify-center ${className}`}>{children}</span>;
 }
 
-export function VerdictBadge({ verdict, small = false }) {
+// Round, 3D-looking icon used on the Check screen (light from the top left, soft shadow below).
+export function Orb({ className = "", children }) {
+  return <span className={`orb inline-flex items-center justify-center ${className}`}>{children}</span>;
+}
+
+export function VerdictBadge({ verdict, small = false, round = false }) {
   const v = VERDICTS[verdict] || VERDICTS.None;
+  const Icon = round ? Orb : Hex;
   return (
     <span className={`inline-flex items-center gap-2 font-bold ${v.color} ${small ? "text-sm" : ""}`}>
-      <Hex className={`${v.bg} text-white ${small ? "w-6 h-6 text-xs" : "w-8 h-8 text-sm"}`}>{v.icon}</Hex>
+      <Icon className={`${v.bg} text-white ${small ? "w-6 h-6 text-xs" : "w-8 h-8 text-sm"}`}>{v.icon}</Icon>
       {v.label}
     </span>
   );
@@ -32,11 +39,11 @@ export function VerdictBadge({ verdict, small = false }) {
 export function ForestBadge({ frozen }) {
   return frozen ? (
     <span className="inline-flex items-center gap-1.5 rounded-full bg-ember/10 text-ember px-3 py-1 text-sm font-bold">
-      🔒 Frozen: forest loss detected
+      <Icon name="lock" className="w-4 h-4" /> Frozen: forest loss detected
     </span>
   ) : (
     <span className="inline-flex items-center gap-1.5 rounded-full bg-leaf/10 text-leaf px-3 py-1 text-sm font-bold">
-      🟢 Forest healthy
+      <Icon name="leaf" className="w-4 h-4" /> Forest healthy
     </span>
   );
 }
