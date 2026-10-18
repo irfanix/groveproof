@@ -1,0 +1,31 @@
+{
+  "verdict": "Verified",
+  "reason": "9.33 ha of forest is clearly visible and tree loss is 0.0%, below the 2.0% review level.",
+  "numbers": {
+    "area_ha": 9.54,
+    "clear_pct": 100.0,
+    "forest_before_ha": 8.8,
+    "forest_after_ha": 9.33,
+    "forest_cover_after_pct": 97.8,
+    "loss_ha": 0.0,
+    "loss_pct": 0.0,
+    "low_confidence_pct": 18.7,
+    "mean_ndvi_before": 0.445,
+    "mean_ndvi_after": 0.463,
+    "method": "random_forest"
+  },
+  "credits": {
+    "zone": "tropical_dry_forest_asia",
+    "zone_label": "Tropical dry forest, Asia",
+    "forest_ha_used": 9.33,
+    "growth_t_dm_per_ha_yr": 2.0,
+    "root_shoot_ratio": 0.28,
+    "carbon_fraction": 0.47,
+    "annual_co2_t": 41.16,
+    "uncertainty_deduction": 0.25,
+    "buffer_share": 0.1,
+    "credits": 27,
+    "factors_verified": false
+  },
+  "recipe_hash": "0x9a4e8842042d953a67e71e9c02ceda6c247c57e59697f3ea2c58ed90b09ef06c"
+}

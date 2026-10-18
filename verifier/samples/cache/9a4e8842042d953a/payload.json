@@ -1,0 +1,135 @@
+{
+  "check_id": "9a4e8842042d953a",
+  "result": {
+    "verdict": "Verified",
+    "reason": "9.33 ha of forest is clearly visible and tree loss is 0.0%, below the 2.0% review level.",
+    "numbers": {
+      "area_ha": 9.54,
+      "clear_pct": 100.0,
+      "forest_before_ha": 8.8,
+      "forest_after_ha": 9.33,
+      "forest_cover_after_pct": 97.8,
+      "loss_ha": 0.0,
+      "loss_pct": 0.0,
+      "low_confidence_pct": 18.7,
+      "mean_ndvi_before": 0.445,
+      "mean_ndvi_after": 0.463,
+      "method": "random_forest"
+    },
+    "credits": {
+      "zone": "tropical_dry_forest_asia",
+      "zone_label": "Tropical dry forest, Asia",
+      "forest_ha_used": 9.33,
+      "growth_t_dm_per_ha_yr": 2.0,
+      "root_shoot_ratio": 0.28,
+      "carbon_fraction": 0.47,
+      "annual_co2_t": 41.16,
+      "uncertainty_deduction": 0.25,
+      "buffer_share": 0.1,
+      "credits": 27,
+      "factors_verified": false
+    },
+    "recipe_hash": "0x9a4e8842042d953a67e71e9c02ceda6c247c57e59697f3ea2c58ed90b09ef06c"
+  },
+  "result_hash": "0x7525a4fb5602138041f9026ccb8366985f6b7883ca8193ced75806b2bd53f2b1",
+  "recipe_hash": "0x9a4e8842042d953a67e71e9c02ceda6c247c57e59697f3ea2c58ed90b09ef06c",
+  "explanation": {
+    "text": "Result: Verified. 9.33 ha of forest is clearly visible and tree loss is 0.0%, below the 2.0% review level. Based on 9.33 ha of forest, we estimate 41.16 tonnes of CO2 stored per year. After setting aside 25% for uncertainty and 10% as a safety buffer, 27 credits can be created.",
+    "source": "template",
+    "note": "No AI model is connected, so the standard explanation was used."
+  },
+  "timings": [
+    {
+      "label": "Finding satellite images",
+      "seconds": 3.3
+    },
+    {
+      "label": "Downloading pictures and removing clouds (before and after together)",
+      "seconds": 16.8
+    },
+    {
+      "label": "Mapping forest and comparing",
+      "seconds": 0.3
+    },
+    {
+      "label": "Calculating credits",
+      "seconds": 0.0
+    },
+    {
+      "label": "Writing the explanation",
+      "seconds": 0.0
+    }
+  ],
+  "cells": [
+    "618693407924289535"
+  ],
+  "boundary": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          78.775488,
+          16.121885
+        ],
+        [
+          78.779264,
+          16.12205
+        ],
+        [
+          78.779264,
+          16.119782
+        ],
+        [
+          78.775531,
+          16.119823
+        ],
+        [
+          78.775488,
+          16.121885
+        ]
+      ]
+    ]
+  },
+  "windows": {
+    "before": [
+      "2025-01-01",
+      "2025-03-31"
+    ],
+    "after": [
+      "2026-01-01",
+      "2026-03-31"
+    ]
+  },
+  "scenes": {
+    "before": [
+      "S2B_MSIL2A_20250206T050909_R019_T43PHT_20250206T072338",
+      "S2B_MSIL2A_20250206T050909_R019_T44PKC_20250206T072338",
+      "S2B_MSIL2A_20250216T050809_R019_T43PHT_20250216T073441",
+      "S2B_MSIL2A_20250216T050809_R019_T44PKC_20250216T073441",
+      "S2C_MSIL2A_20250211T051001_R019_T43PHT_20250211T102211",
+      "S2C_MSIL2A_20250211T051001_R019_T44PKC_20250211T102211"
+    ],
+    "after": [
+      "S2B_MSIL2A_20260303T050649_R019_T43PHT_20260303T101734",
+      "S2C_MSIL2A_20260117T051141_R019_T43PHT_20260117T081509",
+      "S2C_MSIL2A_20260117T051141_R019_T44PKC_20260117T081509",
+      "S2C_MSIL2A_20260206T051011_R019_T43PHT_20260206T101110",
+      "S2C_MSIL2A_20260206T051011_R019_T44PKC_20260206T101110",
+      "S2C_MSIL2A_20260216T050911_R019_T44PKC_20260216T100811"
+    ]
+  },
+  "model": {
+    "name": "random_forest",
+    "version": "rf-1.0",
+    "sha256": "2b272c412a7652c67a0fab95811453a4fabad12ceef58b9c64c8eb3d2943b1c4"
+  },
+  "rules": {
+    "min_clear_pct": 70,
+    "min_forest_cover_pct": 30,
+    "min_forest_ha": 1.0,
+    "not_eligible_loss_pct": 5.0,
+    "review_loss_pct": 2.0,
+    "max_low_confidence_pct": 20
+  },
+  "checked_at": "2026-10-18 12:03 UTC"
+}

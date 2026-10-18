@@ -5,7 +5,7 @@ import { BrowserProvider, Contract, JsonRpcProvider, formatEther } from "ethers"
 const found = import.meta.glob("../../../shared/deployment.json", { eager: true });
 export const deployment = Object.values(found)[0]?.default || null;
 
-export const RPC_URL = import.meta.env.VITE_RPC_URL || "https://rpc-amoy.polygon.technology";
+export const RPC_URL = import.meta.env.VITE_RPC_URL || "https://polygon-amoy-bor-rpc.publicnode.com";
 export const EXPLORER = (import.meta.env.VITE_EXPLORER_URL || "https://amoy.polygonscan.com").replace(/\/$/, "");
 export const CHAIN_ID = Number(import.meta.env.VITE_CHAIN_ID || deployment?.chainId || 80002);
 

@@ -1,0 +1,24 @@
+# Render blueprint for the satellite checker (free plan).
+# Secrets (marked sync: false) are typed in on the Render website, never stored here.
+services:
+  - type: web
+    name: groveproof-checker
+    runtime: python
+    plan: free
+    rootDir: verifier
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn groveproof.api:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.7"
+      - key: RPC_URL
+        value: https://polygon-amoy-bor-rpc.publicnode.com
+      - key: LOAD_THREADS
+        value: "6"
+      - key: VERIFIER_PRIVATE_KEY
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: LLM_API_KEY
+        sync: false

@@ -10,6 +10,8 @@ the same scenes again.
 """
 from __future__ import annotations
 
+import os
+
 import numpy as np
 from pyproj import Transformer
 from rasterio.features import geometry_mask
@@ -19,7 +21,7 @@ from shapely.ops import transform as shp_transform
 from .analysis import BANDS, Composite
 
 STAC_URL = "https://planetarycomputer.microsoft.com/api/stac/v1"
-LOAD_THREADS = 16  # pictures are read over the internet in parallel; this is the main speed-up
+LOAD_THREADS = int(os.getenv("LOAD_THREADS", "16"))  # fewer on small free servers; pictures are read over the internet in parallel; this is the main speed-up
 _rio_ready = False
 
 

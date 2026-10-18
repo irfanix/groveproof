@@ -100,7 +100,7 @@ def project_cells(project_id: int) -> list[str]:
                 return [str(x) for x in c["cells"]]
         except Exception:
             pass
-    start = int(os.getenv("DEPLOY_BLOCK") or (_deployment() or {}).get("deployBlock", 0))
+    start = int(os.getenv("DEPLOY_BLOCK") or 0) or int((_deployment() or {}).get("deployBlock", 0))  # "0" means unset
     latest = w3.eth.block_number
     step = 9000
     to = latest
