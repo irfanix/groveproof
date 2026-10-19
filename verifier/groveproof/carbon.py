@@ -22,8 +22,31 @@ def uncertainty_deduction(numbers: dict, ccfg: dict) -> float:
     return round(min(d, ccfg["max_uncertainty_deduction"]), 4)
 
 
+def zone_for(boundary: dict, factors: dict) -> str | None:
+    """The carbon zone whose region holds the centre of this area, or None if no zone is set up there."""
+    pts = boundary["coordinates"][0] if boundary.get("type") == "Polygon" else boundary["coordinates"][0][0]
+    lon = sum(p[0] for p in pts) / len(pts)
+    lat = sum(p[1] for p in pts) / len(pts)
+    for name, z in factors["zones"].items():
+        r = z.get("region")
+        if r and r["lat"][0] <= lat <= r["lat"][1] and r["lon"][0] <= lon <= r["lon"][1]:
+            return name
+    return None
+
+
 def compute_credits(verdict: str, numbers: dict, ccfg: dict, factors: dict, zone: str | None = None) -> dict:
     zone = zone or factors["default_zone"]
+    if zone not in factors["zones"]:
+        # The satellite answer still stands, but there are no carbon factors for this place,
+        # so no credit number is made up.
+        return {
+            "zone": zone, "zone_label": None, "supported": False,
+            "note": factors.get("unsupported_note", "Credits are not estimated for this region."),
+            "forest_ha_used": numbers["forest_after_ha"], "growth_t_dm_per_ha_yr": None, "root_shoot_ratio": None,
+            "carbon_fraction": factors["carbon_fraction"]["value"], "annual_co2_t": None,
+            "uncertainty_deduction": uncertainty_deduction(numbers, ccfg), "buffer_share": ccfg["buffer_share"],
+            "credits": 0, "factors_verified": bool(factors.get("verified", False)),
+        }
     z = factors["zones"][zone]
     cf = factors["carbon_fraction"]["value"]
     co2_per_c = factors["co2_per_c"]["value"]
@@ -45,5 +68,6 @@ def compute_credits(verdict: str, numbers: dict, ccfg: dict, factors: dict, zone
         "uncertainty_deduction": u,
         "buffer_share": b,
         "credits": credits,
+        "supported": True,
         "factors_verified": bool(factors.get("verified", False)),
     }

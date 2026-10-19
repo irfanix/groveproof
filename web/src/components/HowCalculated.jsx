@@ -26,7 +26,13 @@ export default function HowCalculated({ payload }) {
           </p>
           <p id="proof-forest" className="mono rounded-lg px-1 -mx-1">Forest before {n.forest_before_ha} ha → after {n.forest_after_ha} ha, loss {n.loss_ha} ha ({n.loss_pct}%), unsure pixels {n.low_confidence_pct}%</p>
         </div>
-        {r.verdict === "Verified" && (
+        {r.verdict === "Verified" && c.supported === false && (
+          <div>
+            <h3 className="font-bold">3. Credits</h3>
+            <p className="muted">{c.note}</p>
+          </div>
+        )}
+        {r.verdict === "Verified" && c.supported !== false && (
           <div>
             <h3 className="font-bold">3. Credits (code only, no AI)</h3>
             <p id="proof-credits" className="mono text-sm bg-white border border-line rounded-xl p-3 overflow-x-auto">

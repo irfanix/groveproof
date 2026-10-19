@@ -21,7 +21,8 @@ function shareText(payload, name) {
   const r = payload.result;
   const v = VERDICTS[r.verdict];
   const lines = [`GroveProof check: ${name}`, `Result: ${v.label}. ${r.reason}`];
-  if (r.verdict === "Verified") lines.push(`Credits allowed: ${r.credits.credits} (1 credit = 1 tonne CO2)`);
+  const noFactors = r.credits?.supported === false;
+  if (r.verdict === "Verified") lines.push(noFactors ? "Credits: not estimated for this region" : `Credits allowed: ${r.credits.credits} (1 credit = 1 tonne CO2)`);
   if (payload.recipe_hash) lines.push(`Recipe fingerprint: ${payload.recipe_hash}`);
   lines.push(window.location.origin);
   return lines.join("\n");
@@ -30,6 +31,7 @@ function shareText(payload, name) {
 export default function VerdictCard({ payload, name = "Forest" }) {
   const r = payload.result;
   const v = VERDICTS[r.verdict];
+  const noFactors = r.credits?.supported === false;
   const n = r.numbers;
   const full = r.verdict !== "AlreadyClaimed";
   const [copied, setCopied] = useState(false);
@@ -45,7 +47,7 @@ export default function VerdictCard({ payload, name = "Forest" }) {
         <Orb className={`orb-big stamp-in ${v.bg} text-white w-20 h-20 text-3xl font-bold shrink-0`}>{v.icon}</Orb>
         <div>
           <h2 className={`text-3xl font-extrabold ${v.color}`}>{v.label}</h2>
-          <p className="muted">{v.next}</p>
+          <p className="muted">{noFactors && r.verdict === "Verified" ? "Healthy forest. Credits are not estimated for this region." : v.next}</p>
         </div>
       </div>
       <p className="mt-4 text-lg leading-relaxed">{r.reason}</p>
@@ -56,7 +58,7 @@ export default function VerdictCard({ payload, name = "Forest" }) {
             <Stat label="Forest now" value={n.forest_after_ha} unit="ha" proof="proof-forest" />
             <Stat label="Tree loss" value={n.loss_pct} unit="%" proof="proof-forest" />
             <Stat label="Seen clearly (no cloud)" value={n.clear_pct} unit="%" proof="proof-clear" />
-            <Stat label="Credits allowed" value={r.credits.credits} unit="t CO₂" proof={r.verdict === "Verified" ? "proof-credits" : "proof-rules"} />
+            <Stat label="Credits allowed" value={noFactors ? "Not set up" : r.credits.credits} unit={noFactors ? "" : "t CO₂"} proof={r.verdict === "Verified" ? "proof-credits" : "proof-rules"} />
           </div>
           <p className="text-sm muted mt-3">Every number here was calculated by code from satellite pixels. Press a number to see how.</p>
         </>

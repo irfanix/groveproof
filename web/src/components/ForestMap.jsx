@@ -5,6 +5,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw";
 import "leaflet-draw/dist/leaflet.draw.css";
+import MapSearch from "./MapSearch";
 
 const SATELLITE = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
 
@@ -75,5 +76,17 @@ export default function ForestMap({ samples = [], selectedId, onSelectSample, on
     }).addTo(g);
   }, [cells, claimedCells]);
 
-  return <div ref={el} className="w-full h-full min-h-[320px] rounded-2xl overflow-hidden" aria-label="Map of the forest" />;
+  function goTo({ lat, lon, bounds }) {
+    const m = map.current;
+    if (!m) return;
+    if (bounds) m.flyToBounds(bounds, { maxZoom: 14, duration: 1.2 });
+    else m.flyTo([lat, lon], 14, { duration: 1.2 });
+  }
+
+  return (
+    <div className="relative w-full h-full min-h-[320px]">
+      <div ref={el} className="w-full h-full min-h-[320px] rounded-2xl overflow-hidden" aria-label="Map of the forest" />
+      <MapSearch onGo={goTo} />
+    </div>
+  );
 }

@@ -274,3 +274,15 @@ def test_explain_note_says_why_text_was_replaced(monkeypatch):
     monkeypatch.setattr(ex.httpx, "post", lambda *a, **k: FakeResp(good))
     out = ex.explain(r)
     assert out["source"] == "ai" and "1 numbers" in out["note"]
+
+
+def test_zone_by_region_and_unsupported_places_get_no_credits():
+    sq = lambda lon, lat: {"type": "Polygon", "coordinates": [[[lon, lat], [lon + .01, lat], [lon + .01, lat + .01], [lon, lat + .01], [lon, lat]]]}
+    assert carbon.zone_for(sq(78.78, 16.11), FAC) == "tropical_dry_forest_asia"    # Nallamala
+    assert carbon.zone_for(sq(-60.0, -3.0), FAC) is None                           # Amazon
+    assert carbon.zone_for(sq(8.2, 48.0), FAC) is None                             # Black Forest
+    numbers = {"forest_after_ha": 100.0, "clear_pct": 95.0, "low_confidence_pct": 2.0}
+    c = carbon.compute_credits("Verified", numbers, CFG["credits"], FAC, "none")
+    assert c["credits"] == 0 and c["supported"] is False and c["annual_co2_t"] is None
+    ok = carbon.compute_credits("Verified", numbers, CFG["credits"], FAC, "tropical_dry_forest_asia")
+    assert ok["supported"] is True and ok["growth_t_dm_per_ha_yr"] == 1.5 and ok["credits"] > 0

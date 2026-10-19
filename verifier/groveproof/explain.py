@@ -73,7 +73,9 @@ def template(result: dict) -> str:
     n, c = result["numbers"], result["credits"]
     word = VERDICT_WORDS[result["verdict"]]
     text = f"Result: {word}. {result['reason']}"
-    if result["verdict"] == "Verified":
+    if result["verdict"] == "Verified" and c.get("supported") is False:
+        text += " " + c["note"]
+    elif result["verdict"] == "Verified":
         text += (f" Based on {c['forest_ha_used']} ha of forest, we estimate {c['annual_co2_t']} tonnes of CO2 "
                  f"stored per year. After setting aside {round(c['uncertainty_deduction'] * 100)}% for uncertainty "
                  f"and {round(c['buffer_share'] * 100)}% as a safety buffer, {c['credits']} credits can be created.")

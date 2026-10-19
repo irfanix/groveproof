@@ -137,8 +137,8 @@ export default function Check() {
                   className={`choice text-left rounded-xl border px-4 py-3 min-h-[48px] transition-colors ${s.id === selectedId ? "border-leaf bg-leaf/5" : "border-line bg-white hover:border-moss"}`}>
                   <div className="font-bold">{s.name}</div>
                   <div className="text-sm muted">{s.description}</div>
-                  <div className={`text-xs font-bold mt-1 ${s.cached ? "text-leaf" : "text-amberleaf"}`}>
-                    <span className="inline-flex items-center gap-1"><Icon name={s.cached ? "bolt" : "satellite"} className="w-3.5 h-3.5" />{s.cached ? "Saved result: opens in a second" : "Live check: about 1 to 2 minutes"}</span>
+                  <div className={`text-xs font-bold mt-1 ${s.cached || s.expected === "AlreadyClaimed" ? "text-leaf" : "text-amberleaf"}`}>
+                    <span className="inline-flex items-center gap-1"><Icon name={s.cached || s.expected === "AlreadyClaimed" ? "bolt" : "satellite"} className="w-3.5 h-3.5" />{s.expected === "AlreadyClaimed" ? "Blockchain check: a few seconds" : s.cached ? "Saved result: opens in a second" : "Live check: about 1 to 2 minutes"}</span>
                   </div>
                 </button>
               ))}
@@ -205,6 +205,12 @@ export default function Check() {
                     ? "Written by AI from the numbers above. Every number was checked against the result."
                     : "Standard explanation built from the numbers above."}
                 </p>
+              </section>
+            )}
+            {r.verdict === "Verified" && r.credits.supported === false && (
+              <section className="panel p-5">
+                <h2 className="text-xl font-bold">Credits not estimated here</h2>
+                <p className="muted mt-1">The satellite result above is real: forest area, tree loss and cloud cover work anywhere on Earth. {r.credits.note} Making up a credit number for a forest type we have not set up would go against what GroveProof stands for.</p>
               </section>
             )}
             {r.verdict === "Verified" && r.credits.credits > 0 && (

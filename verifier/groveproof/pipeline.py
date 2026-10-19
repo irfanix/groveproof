@@ -76,7 +76,8 @@ def build_recipe(boundary: dict, before: tuple[str, str], after: tuple[str, str]
         "cells": cells_to_strings(boundary_to_cells(boundary, cfg["h3_resolution"])),
         "windows": {"before": list(before), "after": list(after)},
         "scenes": {"before": scenes_before, "after": scenes_after},
-        "zone": zone or fac["default_zone"],
+        # A sample names its zone; a drawn area gets the zone of the region it lies in, or "none".
+        "zone": zone or carbon.zone_for(boundary, fac) or "none",
         "config": cfg,
         "factors": fac,
         "model": {k: model_info[k] for k in ("name", "version", "sha256")},

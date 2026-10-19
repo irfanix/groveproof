@@ -1,0 +1,164 @@
+{
+  "recipe_version": 1,
+  "boundary": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          78.786,
+          16.11
+        ],
+        [
+          78.801,
+          16.11
+        ],
+        [
+          78.801,
+          16.124
+        ],
+        [
+          78.786,
+          16.124
+        ],
+        [
+          78.786,
+          16.11
+        ]
+      ]
+    ]
+  },
+  "h3_resolution": 9,
+  "cells": [
+    "618693407929532415",
+    "618693407930056703",
+    "618693407930580991",
+    "618693407930843135",
+    "618693407931105279",
+    "618693407933726719",
+    "618693407933988863",
+    "618693407934775295",
+    "618693407935037439",
+    "618693411780689919",
+    "618693411782524927",
+    "618693411782787071",
+    "618693411786194943",
+    "618693411786457087",
+    "618693411786719231",
+    "618693411786981375",
+    "618693411787243519",
+    "618693411787505663",
+    "618693411787767807",
+    "618693412042047487",
+    "618693412042309631",
+    "618693412043358207"
+  ],
+  "windows": {
+    "before": [
+      "2025-07-01",
+      "2025-07-20"
+    ],
+    "after": [
+      "2026-07-01",
+      "2026-07-20"
+    ]
+  },
+  "scenes": {
+    "before": [
+      "S2C_MSIL2A_20250711T050711_R019_T43PHT_20250711T102713",
+      "S2C_MSIL2A_20250711T050711_R019_T44PKC_20250711T102713"
+    ],
+    "after": [
+      "S2B_MSIL2A_20260711T050649_R019_T43PHT_20260711T085428"
+    ]
+  },
+  "zone": "tropical_dry_forest_asia",
+  "config": {
+    "version": "rules-1.1",
+    "h3_resolution": 9,
+    "max_cells": 300,
+    "satellite": {
+      "collection": "sentinel-2-l2a",
+      "max_scene_cloud_pct": 60,
+      "max_scenes": 6,
+      "resolution_m": 10,
+      "clear_scl_classes": [
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    "forest": {
+      "forest_probability": 0.5,
+      "low_confidence_band": [
+        0.35,
+        0.65
+      ],
+      "min_ndvi_drop_for_loss": 0.1,
+      "ndvi_fallback_threshold": 0.6
+    },
+    "verdict": {
+      "min_clear_pct": 70,
+      "min_forest_cover_pct": 30,
+      "min_forest_ha": 1.0,
+      "not_eligible_loss_pct": 5.0,
+      "review_loss_pct": 2.0,
+      "max_low_confidence_pct": 20
+    },
+    "credits": {
+      "base_uncertainty_deduction": 0.2,
+      "extra_deduction_if_clear_below_90": 0.05,
+      "extra_deduction_if_low_conf_above_10": 0.05,
+      "max_uncertainty_deduction": 0.35,
+      "buffer_share": 0.1
+    }
+  },
+  "factors": {
+    "version": "factors-1.1",
+    "note": "Demo method based on IPCC default factors. NOT an official carbon standard. factors-1.1 (Oct 2026): growth for continental Asia corrected from 2.0 to 1.5 (2.0 is the insular Asia value) and sources corrected to the IPCC 2006 tables they come from. Values were checked against a published summary of the IPCC tables, not yet against the printed IPCC page, so verified stays false.",
+    "verified": false,
+    "carbon_fraction": {
+      "value": 0.47,
+      "source": "IPCC 2006 Guidelines, Vol. 4, Ch. 4, Table 4.3 (default carbon fraction 0.47)"
+    },
+    "co2_per_c": {
+      "value": 3.6666666667,
+      "source": "Molecular weight ratio 44/12"
+    },
+    "zones": {
+      "tropical_dry_forest_asia": {
+        "label": "Tropical dry forest, Asia",
+        "growth_t_dm_per_ha_yr": 1.5,
+        "growth_source": "IPCC 2006 Guidelines, Vol. 4, Ch. 4, Table 4.9: above-ground net biomass growth, natural tropical dry forest, Asia continental, older than 20 years (1.5 t d.m./ha/yr). Insular Asia is 2.0.",
+        "root_shoot_ratio": 0.28,
+        "root_shoot_source": "IPCC 2006 Guidelines, Vol. 4, Ch. 4, Table 4.4: tropical dry forest, above-ground biomass over 20 t/ha (0.28). The 2019 Refinement gives 0.44 for natural tropical dry forest in Asia; we keep the lower 2006 value, so credits err on the low side.",
+        "region": {
+          "name": "peninsular and central India",
+          "lat": [
+            8.0,
+            24.5
+          ],
+          "lon": [
+            68.0,
+            88.0
+          ]
+        }
+      },
+      "tropical_moist_deciduous_asia": {
+        "label": "Tropical moist deciduous forest, Asia",
+        "growth_t_dm_per_ha_yr": 3.0,
+        "growth_source": "IPCC 2006 Guidelines, Vol. 4, Ch. 4, Table 4.9. NOT CHECKED: used only when a check asks for this zone by name.",
+        "root_shoot_ratio": 0.24,
+        "root_shoot_source": "IPCC 2006 Guidelines, Vol. 4, Ch. 4, Table 4.4. NOT CHECKED: used only when a check asks for this zone by name."
+      }
+    },
+    "default_zone": "tropical_dry_forest_asia",
+    "unsupported_note": "Credits are not estimated here: carbon factors are only set up for tropical dry forest in peninsular and central India."
+  },
+  "model": {
+    "name": "random_forest",
+    "version": "rf-1.0",
+    "sha256": "2b272c412a7652c67a0fab95811453a4fabad12ceef58b9c64c8eb3d2943b1c4"
+  },
+  "code_commit": "6937b3f1e2176e39e06a43e9f85e2f8b4c1b4278"
+}
