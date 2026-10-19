@@ -25,7 +25,8 @@ import time
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
+from starlette.middleware.base import BaseHTTPMiddleware
 from pydantic import BaseModel
 
 from . import assistant, chain, evidence, pipeline
@@ -38,9 +39,23 @@ load_dotenv()
 log = logging.getLogger("groveproof")
 
 app = FastAPI(title="GroveProof verifier", version="1.0")
+
+
+async def _readable_errors(request, call_next):
+    """Turn a crash into a normal JSON answer. This sits inside the CORS layer, so the browser can
+    read the reason instead of reporting "the checker cannot be reached"."""
+    try:
+        return await call_next(request)
+    except Exception as e:  # noqa: BLE001
+        log.exception("unhandled error on %s", request.url.path)
+        return JSONResponse({"detail": f"The checker hit a problem: {str(e)[:300] or e.__class__.__name__}"},
+                            status_code=500)
+
+
+app.add_middleware(BaseHTTPMiddleware, dispatch=_readable_errors)  # added first = inside CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=os.getenv("ALLOWED_ORIGINS", "*").split(","),
+    allow_origins=[o.strip().rstrip("/") for o in os.getenv("ALLOWED_ORIGINS", "*").split(",") if o.strip()],
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
@@ -77,7 +92,10 @@ class RecheckRequest(BaseModel):
 @app.get("/api/health")
 def health():
     _, info = load_model()
-    return {"ok": True, "model": info, "chain": chain.configured(), "rules": config()["version"]}
+    out = {"ok": True, "model": info, "chain": chain.configured(), "rules": config()["version"]}
+    if os.getenv("VERIFIER_PRIVATE_KEY") and chain.key_problem():
+        out["chain_problem"] = chain.key_problem()
+    return out
 
 
 @app.get("/api/samples")

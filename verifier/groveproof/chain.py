@@ -15,8 +15,32 @@ VERDICT_CODE = {"Verified": 1, "NeedsReview": 2, "NotEligible": 3, "CantCheckYet
 DEPLOYMENT = Path(__file__).resolve().parents[2] / "shared" / "deployment.json"
 
 
+def _key() -> str:
+    """The verifier key, cleaned of things that sneak in when it is pasted into a website form:
+    spaces, quotes, a copied "VERIFIER_PRIVATE_KEY=" in front, or a missing 0x."""
+    k = (os.getenv("VERIFIER_PRIVATE_KEY") or "").strip().strip('"').strip("'").strip()
+    if "=" in k:
+        k = k.split("=", 1)[1].strip().strip('"').strip("'")
+    if k and not k.lower().startswith("0x"):
+        k = "0x" + k
+    return k
+
+
+def key_problem() -> str | None:
+    """None if the key looks like a private key, otherwise a plain reason (never the key itself)."""
+    k = _key()
+    if not k:
+        return "VERIFIER_PRIVATE_KEY is empty"
+    body = k[2:]
+    if len(body) != 64:
+        return f"VERIFIER_PRIVATE_KEY should be 0x plus 64 characters, it has {len(body)}"
+    if any(c not in "0123456789abcdefABCDEF" for c in body):
+        return "VERIFIER_PRIVATE_KEY contains characters that are not 0-9 or a-f"
+    return None
+
+
 def configured() -> bool:
-    return bool(os.getenv("RPC_URL") and os.getenv("VERIFIER_PRIVATE_KEY") and _deployment())
+    return bool(os.getenv("RPC_URL") and not key_problem() and _deployment())
 
 
 @lru_cache
@@ -38,7 +62,7 @@ def _web3():
         w3.middleware_onion.inject(geth_poa_middleware, layer=0)
     d = _deployment()
     contract = w3.eth.contract(address=Web3.to_checksum_address(d["address"]), abi=d["abi"])
-    account = w3.eth.account.from_key(os.environ["VERIFIER_PRIVATE_KEY"])
+    account = w3.eth.account.from_key(_key())
     return w3, contract, account
 
 
