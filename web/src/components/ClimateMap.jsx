@@ -57,6 +57,14 @@ export default function ClimateMap({ projects, height = 420 }) {
       poly.bindTooltip(`<b>GP-${s.p.id} ${s.p.name}</b><br>${st.label} · ${s.p.issued} credits`, { sticky: true });
       poly.on("click", () => nav(`/lookup?q=GP-${s.p.id}`));
       poly.addTo(g);
+      // A small project is only a few hexagons, too small to see when the map shows a whole state,
+      // so each project also gets a pin at its centre.
+      const pts = s.rings.flat();
+      const c = [pts.reduce((a, q) => a + q[0], 0) / pts.length, pts.reduce((a, q) => a + q[1], 0) / pts.length];
+      const pin = L.circleMarker(c, { radius: 9, color: "#fff", weight: 2, fillColor: st.color, fillOpacity: 1 });
+      pin.bindTooltip(`<b>GP-${s.p.id} ${s.p.name}</b><br>${st.label} · ${s.p.issued} credits`, { direction: "top" });
+      pin.on("click", () => nav(`/lookup?q=GP-${s.p.id}`));
+      pin.addTo(g);
       s.rings.forEach((r) => r.forEach((pt) => bounds.push(pt)));
     }
     if (bounds.length) map.current.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });

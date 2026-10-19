@@ -207,7 +207,14 @@ export default function Check() {
                 </p>
               </section>
             )}
-            {r.verdict === "Verified" && r.credits.credits > 0 && <CreateCredits payload={payload} name={name} />}
+            {r.verdict === "Verified" && r.credits.credits > 0 && (
+              !drawn && sample ? (
+                <section className="panel p-5">
+                  <h2 className="text-xl font-bold">Want to create credits?</h2>
+                  <p className="muted mt-1">Sample forests are for exploring, so they stay free for every visitor. Draw your own area on the map with the square tool, check it, and the Create credits button appears there.</p>
+                </section>
+              ) : <CreateCredits payload={payload} name={name} />
+            )}
           </div>
         </div>
       )}
