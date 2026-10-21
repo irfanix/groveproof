@@ -144,7 +144,16 @@ def decide(n: dict, v: dict) -> tuple[str, str]:
         return "CantCheckYet", (
             f"Only {n['clear_pct']}% of the area was cloud-free in both pictures "
             f"(we need {v['min_clear_pct']}%). Try again with other dates.")
-    if n["forest_before_ha"] < v["min_forest_ha"] or n["forest_cover_after_pct"] < v["min_forest_cover_pct"]:
+    if n["forest_after_ha"] < v["min_forest_ha"]:
+        return "NotEligible", (
+            f"Only {n['forest_after_ha']} ha of forest is visible now "
+            f"(at least {v['min_forest_ha']} ha is needed). Try drawing a bigger area.")
+    if n["forest_before_ha"] < v["min_forest_ha"]:
+        return "NotEligible", (
+            f"Only {n['forest_before_ha']} ha of forest was visible in the earlier picture "
+            f"(at least {v['min_forest_ha']} ha is needed). Credits here are for forest that was "
+            f"already standing, so a forest that appears only in the newer picture is not counted.")
+    if n["forest_cover_after_pct"] < v["min_forest_cover_pct"]:
         return "NotEligible", (
             f"Only {n['forest_cover_after_pct']}% of the area is forest now "
             f"(at least {v['min_forest_cover_pct']}% is needed).")

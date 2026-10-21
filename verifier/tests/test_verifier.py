@@ -286,3 +286,15 @@ def test_zone_by_region_and_unsupported_places_get_no_credits():
     assert c["credits"] == 0 and c["supported"] is False and c["annual_co2_t"] is None
     ok = carbon.compute_credits("Verified", numbers, CFG["credits"], FAC, "tropical_dry_forest_asia")
     assert ok["supported"] is True and ok["growth_t_dm_per_ha_yr"] == 1.5 and ok["credits"] > 0
+
+
+def test_small_forest_messages_say_the_real_reason():
+    v = CFG["verdict"]
+    base = {"clear_pct": 100.0, "forest_after_ha": 2.28, "forest_before_ha": 0.6, "forest_cover_after_pct": 57.7,
+            "loss_ha": 0.0, "loss_pct": 0.0, "low_confidence_pct": 1.0}
+    verdict, reason = analysis.decide(base, v)
+    assert verdict == "NotEligible" and "earlier picture" in reason and "57.7" not in reason
+    verdict, reason = analysis.decide({**base, "forest_after_ha": 0.5}, v)
+    assert verdict == "NotEligible" and "visible now" in reason
+    verdict, _ = analysis.decide({**base, "forest_before_ha": 2.3}, v)
+    assert verdict == "Verified"

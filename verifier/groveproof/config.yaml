@@ -1,7 +1,7 @@
 # GroveProof checking rules. Every number here is shown in the README and in
 # the "How we calculated this" box. Change them only on purpose: changing them
 # changes the recipe hash, so old checks can still be re-run with old settings.
-version: "rules-1.1"   # 1.1: 6 clearest scenes per window (was 12) for faster checks
+version: "rules-1.2"   # 1.1: 6 clearest scenes per window (was 12). 1.2: separate, clear messages for too little forest now / in the earlier picture
 
 h3_resolution: 9            # map cell size about 0.1 km2
 max_cells: 300              # must match MAX_CELLS in the smart contract
@@ -23,7 +23,7 @@ forest:
 verdict:
   min_clear_pct: 70             # below this: Can't check yet
   min_forest_cover_pct: 30      # below this: Not eligible (mostly not forest)
-  min_forest_ha: 1.0
+  min_forest_ha: 1.0            # less forest than this, now or in the earlier picture: Not eligible
   not_eligible_loss_pct: 5.0    # tree loss at or above this: Not eligible
   review_loss_pct: 2.0          # tree loss at or above this: Needs review
   max_low_confidence_pct: 20    # unsure pixels above this: Needs review
