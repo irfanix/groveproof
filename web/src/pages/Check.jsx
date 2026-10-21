@@ -15,8 +15,8 @@ import { forgetChecks, recentChecks, rememberCheck, saveForestName, savedForestN
 import { useSearchParams } from "react-router-dom";
 import { cellsGeoJSON } from "../lib/cells";
 
-const DEFAULT_BEFORE = ["2025-01-01", "2025-03-31"];
-const DEFAULT_AFTER = ["2026-01-01", "2026-03-31"];
+const DEFAULT_BEFORE = ["2024-11-01", "2025-01-31"]; // green season: dry forests in India drop their leaves from about February
+const DEFAULT_AFTER = ["2025-11-01", "2026-01-31"];
 
 export default function Check() {
   const [samples, setSamples] = useState([]);
@@ -161,6 +161,7 @@ export default function Check() {
                   <input className="field mt-1" type="date" value={after[0]} onChange={(e) => setAfter([e.target.value, after[1]])} />
                   <input className="field mt-1" type="date" value={after[1]} onChange={(e) => setAfter([after[0], e.target.value])} />
                 </label>
+                <p className="col-span-2 text-xs muted">Tip: compare the same months in both years. For dry forests in India, November to January works best: the trees still have leaves and the sky is clear. From February the leaves fall, and bare trees can look like lost forest.</p>
               </div>
             )}
             {cells && <p className="text-sm"><Hex className="w-4 h-4 bg-leaf align-middle mr-1" /> {cells.count} map cells will be claimed on the blockchain.</p>}
