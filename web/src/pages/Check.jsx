@@ -164,7 +164,7 @@ export default function Check() {
                 <p className="col-span-2 text-xs muted">Tip: compare the same months in both years. For dry forests in India, November to January works best: the trees still have leaves and the sky is clear. From February the leaves fall, and bare trees can look like lost forest.</p>
               </div>
             )}
-            {cells && <p className="text-sm"><Hex className="w-4 h-4 bg-leaf align-middle mr-1" /> {cells.count} map cells will be claimed on the blockchain.</p>}
+            {cells && <p className="text-sm"><Hex className="w-4 h-4 bg-leaf align-middle mr-1" /> {cells.count} map cell{cells.count === 1 ? "" : "s"} will be claimed on the blockchain.</p>}
             <button className="btn-main w-full text-lg" disabled={!boundary || running} onClick={() => check(false)}>
               {running ? "Checking…" : "Check this forest"}
             </button>

@@ -2,123 +2,226 @@
 
 **Forest carbon credits, checked from space before they are sold.**
 
-GroveProof looks at free satellite pictures of a forest and works out how much of it is really there. Only then can a smart contract create carbon credits. The same land can only be registered once, credits from a forest that is later cut down get frozen, and anyone can run a check again to see if they get the same answer.
+Satellites verify. The contract decides. No credit counts twice.
 
-Built for the IEEE ClimateChain Global Hackathon, Track 1: Carbon Markets & Emissions Transparency.
+[Live app](https://groveproof.vercel.app) · [Smart contract on Polygon Amoy](https://amoy.polygonscan.com/address/0x7868F686f1419A9dECD5456776c2126e8feF8769) · IEEE ClimateChain Global Hackathon, Track 1: Carbon Markets & Emissions Transparency
 
-> Prototype on the Polygon Amoy **test** network. Carbon numbers use a demo method based on IPCC default factors, **not an official carbon standard**.
+> This is a prototype on a **test** network. The coins have no value, and the carbon numbers use a demo method built on IPCC default factors. It is not an official carbon standard.
 
 ---
 
-## What it does (3 screens)
+## Why I built this
 
-| Screen | What you do | What you get |
+I live in a village in Andhra Pradesh, the state with some of India's largest dry forests, like the Nallamala and Seshachalam hills. When I started reading about forest carbon credits, the part that bothered me was simple: a company pays for a forest it will never see, and the proof it gets is a PDF.
+
+The numbers say that proof is often wrong. A study of more than 2,300 carbon crediting projects found that fewer than 16% of the credits matched real emission reductions, and avoided-deforestation projects reached only about a quarter of what they claimed ([Probst et al., Nature Communications, 2024](https://pmc.ncbi.nlm.nih.gov/articles/PMC11564741/)).
+
+Three problems keep coming back:
+
+1. **Nobody checks the forest.** It may be smaller than claimed, or partly cut.
+2. **The same land gets sold twice,** by two projects whose maps overlap.
+3. **Nobody can repeat the math.** The calculation sits in a report, not in code anyone can run.
+
+Free satellite pictures already cover every forest on Earth every few days. Blockchains are good at one thing: refusing to break their own rules. GroveProof puts the two together.
+
+## What it does
+
+- **Check a forest.** Pick a sample forest, or search any place and draw an area. The checker downloads Sentinel-2 pictures from two dates, removes clouds, maps forest pixel by pixel and measures tree loss. You get one answer: Verified, Needs review, Not eligible, Already claimed, or Can't check yet.
+- **Create credits.** Only a Verified forest can become credits, and only up to the number the satellites allow. The smart contract enforces this. The website cannot override it.
+- **Buy and retire.** Credits are ERC-1155 tokens. Retiring burns them and creates a certificate (R-1, R-2, ...) that anyone can look up or scan.
+- **Look up anything.** Type `GP-1` or `R-1` to see the forest, the satellite pictures, who holds the credits, every sale and retirement, and a QR code.
+
+**On the test network right now:** 3 forest projects (GP-1, GP-2, GP-3), 80 credits created, 3 sales, 2 credits retired with certificate R-1, and one land claim refused because it overlaps GP-1.
+
+## Who decides what
+
+| Decision | Made by | Can it be overridden? |
 |---|---|---|
-| 🛰️ **Check a forest** | Pick a sample forest or draw an area, press **Check this forest** | One verdict: ✅ Verified, 🟡 Needs review, ❌ Not eligible, ⧉ Already claimed, ☁ Can't check yet. Before/after pictures, forest map, "How we calculated this", and **Create credits** if Verified |
-| 🌳 **My credits** | Connect MetaMask | Your forests with 🟢 Forest healthy / 🔒 Frozen badges, **Buy**, **Retire** and a retirement certificate |
-| 🔍 **Look up a credit** | Type `GP-1` or `R-1` | The credit's story (registered → checked → created → sold → retired → frozen), **Re-run this check**, **Check this forest again**, and the **Try to cheat** panel |
+| Is this land already claimed? | Smart contract (map cells) | No |
+| How much forest, how much loss | Code (Random Forest model plus fixed rules) | No, but anyone can re-run it |
+| Verified or not | Fixed rules in `config.yaml`, in a fixed order | No |
+| How many credits | Code (`carbon.py`), formula shown on screen | No |
+| Recording the verdict on-chain | Verifier wallet (server only) | Only the verifier role can write it |
+| Creating credits | Project owner, capped by the contract | Never above the satellite limit |
+| The plain-language summary | Template, or a language model | Its text is thrown away if it contains a number that is not in the result |
 
-## The three new ideas
+## Worked example: Nallamala hills forest
 
-1. **Already claimed (land-level double counting).** Every forest boundary becomes H3 map cells (resolution 9, about 0.1 km² each). The contract stores which project owns each cell and refuses any new project that overlaps.
-2. **Living credits.** A new satellite check compares newer pictures with the last one. If 5% or more of the forest is gone, the contract **freezes** the remaining credits: they can no longer be created, bought, moved or retired. Credits retired earlier stay retired.
-3. **Re-run this check.** Every check saves a recipe (boundary, exact satellite scene ids, dates, rules, carbon factors, model hash, code version). `keccak256(recipe)` and `keccak256(result)` go on-chain. Anyone can run it again and compare the result with what is on the blockchain.
+1. **Land.** A 0.015° square in the Nallamala hills becomes 23 H3 map cells (about 0.1 km² each). The contract says none of them is claimed, so the check goes on.
+2. **Pictures.** The clearest Sentinel-2 scenes from Nov 2024 to Jan 2025 (before) and Nov 2025 to Jan 2026 (after). Clouds removed with the Scene Classification Layer.
+3. **Forest map.** 246.5 ha of forest now, 0% tree loss, 100% of the land seen clearly.
+4. **Rules.** Clear enough, mostly forest, loss under 2%, model confident. Verdict: **Verified**.
+5. **Credits.**
+   ```
+   246.5 ha × 1.5 t growth × (1 + 0.28 roots) × 0.47 carbon × 44/12 = 815.6 t CO₂ per year
+   815.6 × (1 − 25% uncertainty) × (1 − 10% buffer)                 = 550 credits
+   ```
+6. **Proof.** The recipe (boundary, exact scene IDs, dates, rules, factors, model hash, code version) and the result are hashed with keccak256. The verifier writes both hashes on-chain when the forest is registered.
 
-When the data is unclear, GroveProof gives fewer credits, not more. Credits are reduced by an uncertainty deduction (20 to 35%) and a 10% buffer, cloudy land is never counted, and weak evidence becomes *Needs review*, never *Verified*.
+Total time for a fresh check: about 20 seconds.
 
-How AI is used: every number comes from code, not from AI. A language model only writes a short explanation of the result, and a guard throws its text away if it contains any number that is not in the result.
+## How it works
+
+```
+Browser (React) ──reads──► Smart contract on Polygon Amoy ◄──writes verdict── Checker (Python, FastAPI)
+      │ MetaMask: register, create, buy, retire                                     │
+      └───────────── "check this forest" ──────────────────────────────────────────►│
+                                                                                     ▼
+                                                  Sentinel-2 via Microsoft Planetary Computer
+```
+
+```
+boundary ─► H3 map cells ─► claimed on-chain? ── yes ─► Already claimed
+                                  │ no
+                                  ▼
+Sentinel-2, before and after (same months, one year apart)
+ ─► cloud mask ─► median picture ─► forest map per 10 m pixel (Random Forest)
+ ─► tree loss = forest before, not forest after, and NDVI dropped by at least 0.1
+ ─► verdict rules ─► credits ─► recipe + result hashes ─► recordVerification on-chain
+```
+
+**Verdict rules, checked in this order** (the first one that fails decides):
+
+| Rule | Verdict |
+|---|---|
+| Less than 70% of the area cloud-free in both pictures | Can't check yet |
+| Less than 1 ha of forest, now or in the earlier picture | Not eligible |
+| Less than 30% of the area is forest now | Not eligible |
+| Tree loss 5% or more | Not eligible |
+| Tree loss 2% to 5%, or the model is unsure about more than 20% of the area | Needs review |
+| Everything passes | Verified |
+
+**Three ideas I have not seen together elsewhere:**
+
+1. **Land-level double counting.** The contract stores which project owns each map cell and refuses any new project that touches one.
+2. **Living credits.** A later check compares newer pictures with the last ones. If 5% or more of the forest is gone, the contract freezes the remaining credits. Credits already retired stay retired.
+3. **Re-runnable checks.** Anyone can run a saved recipe again and compare the result hash with the one on-chain.
+
+**When unsure, credit less.** At least 28% of every estimate is held back (20 to 35% for uncertainty, plus a 10% buffer). Cloudy pixels are never counted. Outside the region where I have carbon factors, the app shows the satellite result but no credit number.
+
+## Results
+
+**Forest model.** Random Forest on 6 Sentinel-2 bands plus NDVI and NDMI. Accuracy on held-out pixels it never trained on: **93.1%**.
+
+**Sample forests, checked live** (`scripts/verify_samples.py`, report in `verifier/samples/sample_report.md`):
+
+| Sample | Expected | Result |
+|---|---|---|
+| Nallamala hills forest | Verified | Verified: 246.5 ha, 0.0% loss, 100% clear |
+| Seshachalam hills forest | Verified | Verified: 264.4 ha, 0.0% loss, 98.3% clear |
+| Papikonda hills forest | Verified | Verified: 260.9 ha, 0.01% loss, 100% clear |
+| Same forest, monsoon dates | Can't check yet | Can't check yet: only 14.6% seen through the clouds |
+| Overlapping claim (land of GP-1) | Already claimed | Already claimed: 1 of 22 map cells belongs to GP-1 |
+
+**The season experiment.** The same Seshachalam square, checked twice:
+
+| Dates (both years) | Tree loss | Verdict |
+|---|---|---|
+| January to March | 11.3% | Not eligible |
+| November to January | 0.0% | Verified |
+
+The forest did not change. The trees did: dry deciduous forest drops its leaves from February, and bare branches look like lost forest from space. A credit system that ignores the season would punish a healthy forest, or, the other way round, miss real clearing hidden by leaf fall. GroveProof now compares the same green-season months in both years by default and explains why on screen.
+
+**Attacks the contract refuses** (all in the test suite):
+
+| Attack | Refused with |
+|---|---|
+| Retire the same credit twice | `NotEnoughCredits` (retired credits are burned) |
+| Create more credits than the satellites allow | `ExceedsVerifiedCredits` |
+| Register land that is already claimed | `AlreadyClaimed` |
+| Buy credits from a frozen forest | `ProjectIsFrozen` |
+| Record a verdict without being the verifier | `AccessControlUnauthorizedAccount` |
+
+**Tests:** 22 contract tests and 37 checker tests, all passing.
+
+## What could go wrong
+
+| Risk | What GroveProof does |
+|---|---|
+| Clouds hide the land | Below 70% clear: no verdict, "Can't check yet" |
+| Leaf fall looks like tree loss | Same green-season months in both years, by default |
+| The model is unsure (scrub, scattered trees, young plantation) | More than 20% unsure pixels: Needs review, never Verified |
+| A project claims more credits | The contract caps credits at the satellite number |
+| Two projects claim the same land | Map cells: the second one is refused |
+| The forest is cut after credits are sold | A re-check freezes the remaining credits |
+| A fake verifier | Only the verifier role can write verdicts |
+| A language model invents a number | Any number not in the result throws its text away |
+| Wrong carbon factors | Factors are versioned inside every recipe, so old checks stay traceable |
+
+## A mistake I found in my own numbers
+
+While writing this README I checked my carbon factors against the IPCC tables. I had used a growth rate of **2.0** t/ha/yr, which is the value for *insular* Asia (islands like Indonesia). Andhra Pradesh is *continental* Asia: **1.5**. My credits were about 25% too high.
+
+| Factor | Value now | Source |
+|---|---|---|
+| Growth, tropical dry forest, continental Asia, older than 20 years | 1.5 t dry matter/ha/yr | IPCC 2006 Guidelines, Vol. 4, Ch. 4, Table 4.9 |
+| Root to shoot ratio, tropical dry forest | 0.28 | IPCC 2006, Table 4.4 (the 2019 Refinement says 0.44 for Asia; I keep the lower value) |
+| Carbon fraction | 0.47 | IPCC 2006, Table 4.3 |
+
+It is fixed (`factors-1.1`). GP-1, GP-2 and GP-3 were created before the fix, and they stay on the blockchain as they are. Their recipes record the factors they used, which is exactly why the factors live inside the recipe. I checked the values against a published summary of the IPCC tables, not the printed page, so the app still labels them "being checked".
+
+## Other problems I hit
+
+| Problem | Fix | What I learned |
+|---|---|---|
+| A check took 6 minutes | Download before and after pictures in parallel, keep the 6 clearest scenes | 20 seconds now. Measure first. |
+| Polygon blocks crashed the Python library | Added the proof-of-authority middleware | Test on the real network early |
+| MetaMask's node was a few blocks behind and sent failing transactions | The site tests every transaction on its own node first and sets the fee itself | Don't trust one node |
+| Public nodes only search 10,000 blocks at a time | Read events in 9,000-block pieces, 4 at a time | Passports load in about 2 seconds instead of 30+ |
+| A wrong sentence: "57.7% is forest, at least 30% needed: Not eligible" | Each rule now has its own message | Every message is part of the proof |
+
+## What it is not
+
+- Not a certified carbon standard (not Verra, not Gold Standard).
+- It does not prove **additionality**, meaning whether the forest would have been cut without the project. Satellites cannot see that.
+- It does not check land ownership or the rights of people who live in the forest.
+- It runs on a test network with test coins.
+
+## Limitations
+
+- Sentinel-2 sees the canopy from above. Logging under the canopy can be missed.
+- A young plantation can look like forest.
+- Carbon factors are set up only for tropical dry forest in peninsular and central India.
+- The online checker runs on a free server that sleeps after 15 minutes. The first request can take about a minute.
+- Evidence files uploaded online can be lost when the free server restarts.
+
+## What's next
+
+1. A 20-area test against Global Forest Watch: 10 forests with confirmed clearing and 10 stable ones, with the confusion matrix in this README.
+2. Carbon factors for more forest types, each with its source in the recipe.
+3. Automatic yearly re-checks, so living credits stay living without anyone pressing a button.
+4. Field evidence (geotagged photos, forest department reports) reviewed by a second person before credits are created. The upload and review screens already exist.
 
 ---
 
-## Folder structure
+## Run it yourself
 
-```
-groveproof/
-├── contracts/          Solidity smart contract (Hardhat)
-│   ├── contracts/GroveProof.sol
-│   ├── test/GroveProof.test.js     21 tests: every rule + the 5 "Try to cheat" attacks
-│   └── scripts/deploy.js           writes shared/deployment.json (address + ABI)
-├── verifier/           Python satellite checker + API (FastAPI)
-│   ├── groveproof/
-│   │   ├── satellite.py   Sentinel-2 from Microsoft Planetary Computer, cloud mask, median picture
-│   │   ├── analysis.py    forest map, tree loss, verdict rules
-│   │   ├── carbon.py      credit formula (code only)
-│   │   ├── cells.py       boundary → H3 map cells
-│   │   ├── pipeline.py    recipe → result, saved pictures
-│   │   ├── rerun.py       re-run a recipe and compare hashes
-│   │   ├── explain.py     plain-language text + number guard
-│   │   ├── chain.py       verifier wallet writes verdicts on-chain
-│   │   ├── api.py         the API the website calls
-│   │   ├── config.yaml    every rule and threshold
-│   │   └── factors.json   IPCC factors with sources (TO VERIFY)
-│   ├── scripts/train_model.py     trains the Random Forest forest model
-│   ├── scripts/cache_samples.py   saves sample results for a reliable demo
-│   ├── samples/samples.json       sample forests
-│   └── tests/                     28 tests (no internet needed)
-├── web/                React + Vite + Tailwind website (3 screens)
-├── eval/               evaluation areas + run_eval.py
-└── shared/             deployment.json (created by the deploy script)
-```
+You need Node.js 20+, Python 3.11+, Git and MetaMask. Use test wallets only.
 
----
-
-## Run it on your computer
-
-You need: **Node.js 20+**, **Python 3.11+**, **Git**, and the **MetaMask** browser extension.
-
-### 1. Smart contract
-
+**Smart contract**
 ```bash
 cd contracts
 npm install
-npx hardhat test                      # should say: 22 passing
+npx hardhat test                      # 22 passing
+cp .env.example .env                  # AMOY_RPC_URL, DEPLOYER_PRIVATE_KEY, VERIFIER_ADDRESS
+npx hardhat run scripts/deploy.js --network amoy   # writes shared/deployment.json
 ```
 
-**Deploy to Polygon Amoy (free test network):**
-
-1. Make two MetaMask accounts: one **deployer/owner**, one **verifier** (the server uses this one). Export their private keys (MetaMask → account → Account details). Use test wallets only.
-2. Get free test POL for both from the Polygon faucet (search "Polygon Amoy faucet").
-3. `cp .env.example .env` and fill in `DEPLOYER_PRIVATE_KEY` and `VERIFIER_ADDRESS`.
-4. Deploy:
-
-```bash
-npx hardhat run scripts/deploy.js --network amoy
-```
-
-This creates `shared/deployment.json`. Commit it: the website and the verifier both read it.
-
-### 2. Satellite checker (verifier)
-
+**Satellite checker**
 ```bash
 cd verifier
 python -m venv .venv
 # Windows: .venv\Scripts\activate     Mac/Linux: source .venv/bin/activate
 pip install -r requirements.txt
-pytest -q                              # should say: 28 passed
-cp .env.example .env                   # fill RPC_URL and VERIFIER_PRIVATE_KEY (and LLM_API_KEY if you want AI text)
+pytest -q                              # 37 passed
+cp .env.example .env                   # RPC_URL, VERIFIER_PRIVATE_KEY
 uvicorn groveproof.api:app --reload --port 8000
 ```
+Open http://localhost:8000/api/health. `"chain": true` means it found the contract.
 
-Open http://localhost:8000/api/health. `"chain": true` means it is connected to the contract.
+Scripts: `train_model.py` trains the forest model, `verify_samples.py` checks every sample forest for real and writes a report, `save_project_checks.py` copies the checks behind real projects into the repo so they work online.
 
-**Train the forest model** (about 10 to 20 minutes, needs internet):
-
-```bash
-python scripts/train_model.py
-```
-
-Without a model, the checker uses a simple NDVI rule and says so on screen.
-
-**Save the sample results** (do this after training, and after you confirm each sample area on a satellite map):
-
-```bash
-python scripts/cache_samples.py
-```
-
-It prints each verdict and warns you if it differs from the expected one. Commit `samples/samples.json` and `samples/cache/`.
-
-### 3. Website
-
+**Website**
 ```bash
 cd web
 npm install
@@ -126,94 +229,35 @@ cp .env.example .env.local             # VITE_API_URL=http://localhost:8000
 npm run dev
 ```
 
-Open http://localhost:5173.
+**Online (free):** the checker deploys to Render from `render.yaml` (add `VERIFIER_PRIVATE_KEY` and `ALLOWED_ORIGINS`). The website deploys to Vercel with root directory `web` and the four `VITE_` variables as plain config values.
 
-### Try the full flow
-
-1. **Check a forest** → Nallamala hills forest → **Check this forest** → ✅ Verified → **Create credits** (2 MetaMask confirmations).
-2. **Check a forest** → Overlapping claim → **Check this forest** → ⧉ Already claimed (blue hexagons on the map).
-3. **My credits** → switch MetaMask to another account → **Buy** → **Retire** → certificate.
-4. **Look up a credit** → `GP-1` → press every **Try it** button: all five are refused.
-5. **Look up a credit** → **Re-run this check** → ✓ Same result as the blockchain record.
-
----
-
-## Deploy online (free)
-
-**Verifier on Render:** New → Web Service → this repo. Root directory `verifier`. Build `pip install -r requirements.txt`. Start `uvicorn groveproof.api:app --host 0.0.0.0 --port $PORT`. Add environment variables from `verifier/.env.example` (set `ALLOWED_ORIGINS` to the Vercel address). The free plan sleeps after 15 minutes; open `/api/health` a minute before judging or a demo.
-
-**Website on Vercel:** New Project → this repo. Root directory `web`. Add `VITE_API_URL` (the Render address), `VITE_RPC_URL`, `VITE_CHAIN_ID=80002`, `VITE_EXPLORER_URL=https://amoy.polygonscan.com`.
-
----
-
-## How a check works
+## Folder structure
 
 ```
-boundary ─► H3 map cells ─► already claimed on-chain? ── yes ─► ⧉ Already claimed
-                                    │ no
-                                    ▼
-Sentinel-2 scenes (before window, after window)
-  ─► remove clouds (Scene Classification Layer) ─► median picture
-  ─► forest map per 10 m pixel (Random Forest: 6 bands + NDVI + NDMI)
-  ─► tree loss = forest before AND not forest after AND NDVI dropped ≥ 0.1
-  ─► verdict rules (config.yaml)
-  ─► credits (carbon.py)
-  ─► recipe.json + result.json ─► keccak256 hashes ─► recordVerification on-chain
+contracts/   Solidity contract, tests, deploy script (Hardhat)
+verifier/    Python satellite checker and API (FastAPI)
+  groveproof/  satellite, analysis, carbon, cells, pipeline, rerun, chain, api
+  samples/     sample forests, their saved results, sample_report.md
+  scripts/     train_model, verify_samples, save_project_checks
+web/         React website
+eval/        evaluation areas and run_eval.py
+shared/      deployment.json (contract address and ABI)
+render.yaml  settings for the online checker
 ```
 
-Verdict rules, in order:
+## Built with
 
-| Rule | Verdict |
+Solidity 0.8.24, OpenZeppelin, Hardhat · Python 3.12, FastAPI, odc-stac, scikit-learn, h3, web3.py · React 18, Vite, Tailwind, Leaflet, ethers v6 · Sentinel-2 via Microsoft Planetary Computer · OpenStreetMap Nominatim · Polygon Amoy · Vercel and Render
+
+## Team
+
+| Name | Role |
 |---|---|
-| Less than 70% of the area cloud-free in both pictures | ☁ Can't check yet |
-| Less than 30% of the area is forest now | ❌ Not eligible |
-| Tree loss 5% or more | ❌ Not eligible |
-| Tree loss 2% to 5%, or the forest map is unsure about more than 20% of the area | 🟡 Needs review |
-| Otherwise | ✅ Verified |
+| Irfan Dawood | Solo builder: research, satellite checker, smart contract, website |
 
-Credit formula (code only):
+## AI use
 
-```
-CO₂ per year = forest ha × growth (t/ha/yr) × (1 + root:shoot) × 0.47 × 44/12
-credits      = floor( CO₂ per year × (1 − uncertainty deduction) × (1 − 10% buffer) )
-```
-
-## Smart contract rules
-
-| Function | Who | Refused when |
-|---|---|---|
-| `registerProject(cells, uri)` | anyone | any cell already claimed (`AlreadyClaimed`), 0 or more than 300 cells |
-| `recordVerification(...)` | verifier only | not the verifier, project frozen, credits on a non-Verified verdict |
-| `issueCredits(id, n)` | project owner | not Verified, frozen, more than the satellites allow (`ExceedsVerifiedCredits`) |
-| `buy(id, n)` | anyone | frozen, wrong payment, not enough credits for sale |
-| `retire(id, n, for)` | credit holder | frozen, not enough credits (retired credits are burned) |
-| `recordRecheck(id, lossBps, ...)` | verifier only | not the verifier; loss ≥ 5% freezes the project |
-
-Gas: registering a full-size forest (300 cells, about 30 km²) uses about 7.1 million gas, well under the Amoy block limit.
-
----
-
-## Still to do before submission
-
-- [ ] Check every value in `verifier/groveproof/factors.json` against the IPCC 2019 Refinement tables, then set `"verified": true`
-- [ ] Confirm the sample areas on a satellite map; choose the **cleared forest** sample on Global Forest Watch
-- [ ] `python scripts/train_model.py` and write the held-out accuracy here
-- [ ] Fill `eval/areas.geojson` with 10 cleared and 10 stable areas, run `python ../eval/run_eval.py`, paste the table here
-- [ ] Deploy contract to Amoy, verifier to Render, website to Vercel
-- [ ] README sections: opening scene, problem with sources, worked example, threat table, "What it is not", limitations, team table, AI usage disclosure
-
-## Evaluation
-
-*(to fill with `eval/run_eval.py` results)*
-
-## Limitations
-
-- Sentinel-2 sees the canopy from above: small-scale degradation under the canopy and selective logging can be missed.
-- A young plantation can look green like a forest; clearing followed by quick replanting may pass.
-- Monsoon clouds can hide the land for months (the app answers *Can't check yet* instead of guessing).
-- The carbon method is a demo based on IPCC default factors, not a certified methodology.
-- Saved checks of drawn areas are stored on the server disk; on free hosting they can be lost on restart. Sample checks are kept in the repo.
-- Land ownership and legal rights are not checked.
+I used an AI assistant (Claude, by Anthropic) while building: for code, debugging and help with writing. Every number in the app and in this README comes from running the code, the tests or the live network.
 
 ## License
 

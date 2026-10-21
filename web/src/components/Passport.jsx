@@ -170,7 +170,7 @@ export function Impact({ p, check, evidence }) {
 function describe(e, p) {
   const a = e.args;
   switch (e.name) {
-    case "ProjectRegistered": return ["Forest registered", `${a.cells.length} map cells claimed by ${short(a.owner)}`, "map"];
+    case "ProjectRegistered": return ["Forest registered", `${a.cells.length} map cell${a.cells.length === 1 ? "" : "s"} claimed by ${short(a.owner)}`, "map"];
     case "VerificationRecorded": return ["Checked by satellites", `Verdict ${VERDICTS[VERDICT_NAMES[Number(a.verdict)]]?.label}, up to ${a.maxCredits} credits`, "satellite"];
     case "CreditsIssued": return ["Credits created", `${a.amount} credits for ${short(a.owner)}`, "sprout"];
     case "CreditsBought": return ["Credits sold", `${a.amount} credits from ${short(a.seller)} to ${short(a.buyer)}`, "handshake"];

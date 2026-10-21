@@ -43,7 +43,7 @@ function ProjectCard({ p, wallet, onChanged }) {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 className="text-2xl font-bold">GP-{p.id} {meta.name && <span className="font-body font-normal muted text-lg">{meta.name}</span>}</h2>
-          <p className="text-sm muted">Owner {short(p.owner)}{isOwner && " (you)"}, {p.cellCount} map cells</p>
+          <p className="text-sm muted">Owner {short(p.owner)}{isOwner && " (you)"}, {p.cellCount} map cell{p.cellCount === 1 ? "" : "s"}</p>
         </div>
         <ForestBadge frozen={p.frozen} />
       </div>

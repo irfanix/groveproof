@@ -45,7 +45,7 @@ export default function CreateCredits({ payload, name }) {
         const ev = receipt.logs.map((l) => { try { return contract.interface.parseLog(l); } catch { return null; } })
           .find((e) => e?.name === "ProjectRegistered");
         pid = Number(ev.args.projectId);
-        set(1, { note: `Registered as project GP-${pid}, ${payload.cells.length} map cells` });
+        set(1, { note: `Registered as project GP-${pid}, ${payload.cells.length} map cell${payload.cells.length === 1 ? "" : "s"}` });
         project = null;
       }
       setProjectId(pid);
