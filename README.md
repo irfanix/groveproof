@@ -160,7 +160,7 @@ The forest did not change. The trees did: dry deciduous forest drops its leaves 
 | Buy credits from a frozen forest | `ProjectIsFrozen` |
 | Record a verdict without being the verifier | `AccessControlUnauthorizedAccount` |
 
-**Tests:** 22 contract tests and 39 checker tests, all passing.
+**Tests:** 22 contract tests and 40 checker tests, all passing.
 
 ## What could go wrong
 
@@ -243,7 +243,7 @@ cd verifier
 python -m venv .venv
 # Windows: .venv\Scripts\activate     Mac/Linux: source .venv/bin/activate
 pip install -r requirements.txt
-pytest -q                              # 39 passed
+pytest -q                              # 40 passed
 cp .env.example .env                   # RPC_URL, VERIFIER_PRIVATE_KEY
 uvicorn groveproof.api:app --reload --port 8000
 ```

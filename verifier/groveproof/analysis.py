@@ -139,7 +139,7 @@ def analyze(before: Composite, after: Composite, cfg: dict, model=None) -> dict:
         "mean_ndvi_after": _mean(ndvi(after), both_clear),
         "method": "random_forest" if model is not None else "ndvi_rule",
     }
-    verdict, reason = decide(numbers, vcfg)
+    verdict, reason = decide(numbers, vcfg, cfg.get("version"))
     masks = {"forest_before": f_before, "forest_after": f_after, "loss": loss,
              "clear": both_clear, "aoi": aoi}
     return {"numbers": numbers, "verdict": verdict, "reason": reason, "masks": masks}
@@ -153,8 +153,11 @@ def _mean(arr: np.ndarray, mask: np.ndarray) -> float:
 VERDICTS = ["Verified", "NeedsReview", "NotEligible", "CantCheckYet"]
 
 
-def decide(n: dict, v: dict) -> tuple[str, str]:
-    """The verdict rules, in order. Weak evidence can never become Verified."""
+def decide(n: dict, v: dict, version: str | None = None) -> tuple[str, str]:
+    """The verdict rules, in order. Weak evidence can never become Verified.
+
+    `version` is the rules version of the recipe. Checks saved under rules-1.0 and 1.1 keep their
+    original wording, so re-running them gives exactly the same result hash."""
     if n["clear_pct"] < v["min_clear_pct"]:
         return "CantCheckYet", (
             f"Only {n['clear_pct']}% of the area was cloud-free in both pictures "
@@ -181,6 +184,10 @@ def decide(n: dict, v: dict) -> tuple[str, str]:
             f"Satellites show {n['loss_pct']}% tree loss. That is small but not clearly zero, "
             f"so a person should take a look.")
     if n["low_confidence_pct"] > v["max_low_confidence_pct"]:
+        if version in ("rules-1.0", "rules-1.1"):
+            return "NeedsReview", (
+                f"The forest map is unsure about {n['low_confidence_pct']}% of the area, "
+                f"so a person should take a look.")
         return "NeedsReview", (
             f"The forest map is unsure about {n['low_confidence_pct']}% of the area, "
             f"so a person should take a look. This often happens with scrubland or scattered trees, "

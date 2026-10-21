@@ -57,7 +57,7 @@ def compute_credits(verdict: str, numbers: dict, ccfg: dict, factors: dict, zone
     b = ccfg["buffer_share"]
     credits = math.floor(annual_co2 * (1 - u) * (1 - b)) if verdict == "Verified" else 0
 
-    return {
+    out = {
         "zone": zone,
         "zone_label": z["label"],
         "forest_ha_used": area,
@@ -68,6 +68,10 @@ def compute_credits(verdict: str, numbers: dict, ccfg: dict, factors: dict, zone
         "uncertainty_deduction": u,
         "buffer_share": b,
         "credits": credits,
-        "supported": True,
-        "factors_verified": bool(factors.get("verified", False)),
     }
+    # "supported" arrived with factors-1.1 (regions). Results made with factors-1.0 never had it,
+    # and adding it now would change their hash, so a re-run of an old check would no longer match.
+    if factors.get("version") != "factors-1.0":
+        out["supported"] = True
+    out["factors_verified"] = bool(factors.get("verified", False))
+    return out

@@ -285,7 +285,7 @@ def test_zone_by_region_and_unsupported_places_get_no_credits():
     c = carbon.compute_credits("Verified", numbers, CFG["credits"], FAC, "none")
     assert c["credits"] == 0 and c["supported"] is False and c["annual_co2_t"] is None
     ok = carbon.compute_credits("Verified", numbers, CFG["credits"], FAC, "tropical_dry_forest_asia")
-    assert ok["supported"] is True and ok["growth_t_dm_per_ha_yr"] == 1.5 and ok["credits"] > 0
+    assert ok.get("supported", True) is True and ok["growth_t_dm_per_ha_yr"] == 1.5 and ok["credits"] > 0
 
 
 def test_small_forest_messages_say_the_real_reason():
@@ -328,3 +328,30 @@ def test_clearing_seen_only_in_moisture_is_caught():
     assert n >= 0.15 and abs(analysis.ndvi(before)[0, 0] - analysis.ndvi(after)[0, 0]) < 1e-9
     r = analysis.analyze(before, after, CFG, model=Always())
     assert r["numbers"]["loss_pct"] >= 20 and r["verdict"] == "NotEligible"
+
+
+def test_saved_checks_rebuild_to_the_same_result_hash():
+    """Every saved check (samples and the real projects GP-1..GP-3) must still give the exact same
+    result hash with today's code: same verdict text, same credit fields. Satellite numbers are taken
+    from the saved result, everything after them is recomputed. A new field or a reworded message
+    would break 'Re-run this check' for credits already on the blockchain."""
+    import json
+    from pathlib import Path
+    cache = Path(__file__).resolve().parents[1] / "samples" / "cache"
+    folders = [f for f in cache.iterdir() if (f / "recipe.json").exists() and (f / "result.json").exists()]
+    if not folders:
+        pytest.skip("no saved checks")
+    for f in folders:
+        recipe = json.loads((f / "recipe.json").read_text())
+        saved = json.loads((f / "result.json").read_text())
+        cfg = recipe["config"]
+        verdict, reason = decide(saved["numbers"], cfg["verdict"], cfg.get("version"))
+        rebuilt = {
+            "verdict": verdict,
+            "reason": reason,
+            "numbers": saved["numbers"],
+            "credits": carbon.compute_credits(verdict, saved["numbers"], cfg["credits"], recipe["factors"], recipe["zone"]),
+            "recipe_hash": keccak_hex(recipe),
+        }
+        assert rebuilt == saved, f.name
+        assert keccak_hex(rebuilt) == keccak_hex(saved)
