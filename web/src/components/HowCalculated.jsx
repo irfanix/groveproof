@@ -22,7 +22,7 @@ export default function HowCalculated({ payload }) {
             {n.method === "random_forest"
               ? `A Random Forest model (${payload.model?.version}) labels each pixel as forest or not, using 6 colour bands plus NDVI and NDMI.`
               : "Pixels with NDVI = (NIR − Red) / (NIR + Red) of 0.6 or more count as forest."}
-            {" "}Tree loss = forest before, not forest after, and greenness (NDVI) dropped by at least 0.1.
+            {" "}Tree loss = forest before, and now either not forest with greenness (NDVI) down by at least 0.1, or greenness or moisture (NDMI) down by at least 0.15. The second part catches cleared land even when weeds or crops have grown back.
           </p>
           <p id="proof-forest" className="mono rounded-lg px-1 -mx-1">Forest before {n.forest_before_ha} ha → after {n.forest_after_ha} ha, loss {n.loss_ha} ha ({n.loss_pct}%), unsure pixels {n.low_confidence_pct}%</p>
         </div>

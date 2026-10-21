@@ -94,19 +94,22 @@ def analyze(before: Composite, after: Composite, cfg: dict, model=None) -> dict:
     f_after = both_clear & (np.nan_to_num(p_after) >= thr)
 
     drop = np.nan_to_num(ndvi(before) - ndvi(after))
-    # Clearing check that does not depend on the model: a pixel that was forest and is now
-    # clearly less green (big NDVI drop, low NDVI left) is cleared land, even if the model,
-    # trained on a broad "tree cover" label, still calls it forest. Found by the evaluation:
-    # cleared patches looked bare in the picture but stayed "forest" on the map.
-    # Recipes saved before rules-1.3 have no clearing settings; they run exactly as before,
-    # so their saved result hashes still match when re-run.
-    if "clearing_min_ndvi_drop" in fcfg:
+    # Clearing check that does not depend on the model. The forest model was trained on a broad
+    # "tree cover" label and calls freshly cleared land "forest" once weeds and crops grow back.
+    # The evaluation showed what still gives clearing away: the land loses moisture (NDMI, which
+    # uses the short-wave infrared band) and greenness compared with the same months a year before.
+    cleared = np.zeros_like(f_before)
+    if "clearing_min_ndmi_drop" in fcfg:                      # rules-1.4 and later
+        dm = np.nan_to_num(ndmi(before) - ndmi(after))
+        cleared = both_clear & f_before & ((drop >= fcfg["clearing_min_ndvi_drop"])
+                                           | (dm >= fcfg["clearing_min_ndmi_drop"]))
+    elif "clearing_max_ndvi_after" in fcfg:                   # rules-1.3, kept so old checks re-run the same
         v_after = np.nan_to_num(ndvi(after), nan=1.0)
-        cleared = (both_clear & f_before
-                   & (drop >= fcfg["clearing_min_ndvi_drop"])
+        cleared = (both_clear & f_before & (drop >= fcfg["clearing_min_ndvi_drop"])
                    & (v_after < fcfg["clearing_max_ndvi_after"]))
-        f_after = f_after & ~cleared
-    loss = f_before & ~f_after & (drop >= fcfg["min_ndvi_drop_for_loss"])
+    # Recipes saved before rules-1.3 have no clearing settings and run exactly as before.
+    f_after = f_after & ~cleared
+    loss = (f_before & ~f_after & (drop >= fcfg["min_ndvi_drop_for_loss"])) | cleared
 
     lo, hi = fcfg["low_confidence_band"]
     unsure = both_clear & (

@@ -310,6 +310,21 @@ def test_clearing_is_caught_even_if_the_model_still_says_forest():
     r = analysis.analyze(before, after, CFG, model=Always())
     assert r["numbers"]["loss_pct"] > 20 and r["verdict"] == "NotEligible"
     old = copy.deepcopy(CFG)
-    for k in ("clearing_min_ndvi_drop", "clearing_max_ndvi_after"):
-        old["forest"].pop(k)
+    for k in ("clearing_min_ndvi_drop", "clearing_min_ndmi_drop", "clearing_max_ndvi_after"):
+        old["forest"].pop(k, None)
     assert analysis.analyze(before, after, old, model=Always())["numbers"]["loss_pct"] == 0  # old recipes unchanged
+
+
+def test_clearing_seen_only_in_moisture_is_caught():
+    """Regrowth can bring greenness back, but cleared land stays drier (NDMI): still loss."""
+    class Always:
+        def predict_proba(self, x):
+            return np.tile([0.0, 1.0], (len(x), 1))
+    before = picture(40)
+    after = picture(40)
+    after.bands["B11"] = after.bands["B11"].copy()
+    after.bands["B11"][:10, :] = after.bands["B11"][:10, :] * 2.5   # drier: more SWIR, NDMI drops
+    n = analysis.ndmi(before)[0, 0] - analysis.ndmi(after)[0, 0]
+    assert n >= 0.15 and abs(analysis.ndvi(before)[0, 0] - analysis.ndvi(after)[0, 0]) < 1e-9
+    r = analysis.analyze(before, after, CFG, model=Always())
+    assert r["numbers"]["loss_pct"] >= 20 and r["verdict"] == "NotEligible"
