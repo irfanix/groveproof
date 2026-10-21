@@ -298,3 +298,18 @@ def test_small_forest_messages_say_the_real_reason():
     assert verdict == "NotEligible" and "visible now" in reason
     verdict, _ = analysis.decide({**base, "forest_before_ha": 2.3}, v)
     assert verdict == "Verified"
+
+
+def test_clearing_is_caught_even_if_the_model_still_says_forest():
+    class Always:  # a model that calls every pixel forest
+        def predict_proba(self, x):
+            return np.tile([0.0, 1.0], (len(x), 1))
+    m = np.zeros((40, 40), bool); m[10:30, 10:30] = True   # a cleared block, 25% of the area
+    before = picture(40, forest_mask=np.ones((40, 40), bool))
+    after = picture(40, forest_mask=~m)
+    r = analysis.analyze(before, after, CFG, model=Always())
+    assert r["numbers"]["loss_pct"] > 20 and r["verdict"] == "NotEligible"
+    old = copy.deepcopy(CFG)
+    for k in ("clearing_min_ndvi_drop", "clearing_max_ndvi_after"):
+        old["forest"].pop(k)
+    assert analysis.analyze(before, after, old, model=Always())["numbers"]["loss_pct"] == 0  # old recipes unchanged

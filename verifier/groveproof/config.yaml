@@ -1,7 +1,7 @@
 # GroveProof checking rules. Every number here is shown in the README and in
 # the "How we calculated this" box. Change them only on purpose: changing them
 # changes the recipe hash, so old checks can still be re-run with old settings.
-version: "rules-1.2"   # 1.1: 6 clearest scenes per window (was 12). 1.2: separate, clear messages for too little forest now / in the earlier picture
+version: "rules-1.3"   # 1.2: clearer small-forest messages. 1.3: clearing check by NDVI drop, independent of the model
 
 h3_resolution: 9            # map cell size about 0.1 km2
 max_cells: 300              # must match MAX_CELLS in the smart contract
@@ -18,6 +18,8 @@ forest:
   forest_probability: 0.5       # pixel is forest if model probability >= this
   low_confidence_band: [0.35, 0.65]
   min_ndvi_drop_for_loss: 0.10  # a loss pixel must also lose this much greenness
+  clearing_min_ndvi_drop: 0.20  # forest pixel whose NDVI drops at least this much ...
+  clearing_max_ndvi_after: 0.50 # ... to below this is cleared land, whatever the model says
   ndvi_fallback_threshold: 0.6  # used only if the trained model is missing
 
 verdict:

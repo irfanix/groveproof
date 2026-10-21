@@ -1,0 +1,22 @@
+# Tree cover loss 2024, picked on Global Nature Watch (Eastern Ghats, Andhra Pradesh)
+lat, lon: 17.87611, 81.81927  loss 2024
+lat, lon: 17.82843, 81.91626  loss 2024
+lat, lon: 17.81719, 81.90766  loss 2024
+lat, lon: 17.98747, 81.98078  loss 2024
+lat, lon: 17.80141, 81.89661  loss 2024
+lat, lon: 17.69062, 81.66488  loss 2024
+lat, lon: 17.47076, 81.76083  loss 2024
+lat, lon: 17.97173, 82.03910  loss 2024
+lat, lon: 17.94242, 82.05385  loss 2024
+lat, lon: 17.44449, 81.63652  loss 2024
+# Stable forests: dense forest checked on satellite pictures, inside protected areas
+lat, lon: 21.75000, 86.32000  stable   # Similipal, Odisha
+lat, lon: 21.95000, 86.25000  stable   # Similipal, Odisha
+lat, lon: 21.70000, 86.24500  stable   # Similipal, Odisha
+lat, lon: 22.47500, 81.79000  stable   # Achanakmar, Chhattisgarh
+lat, lon: 22.52000, 81.73500  stable   # Achanakmar, Chhattisgarh
+lat, lon: 19.15800, 80.56000  stable   # Indravati, Chhattisgarh
+lat, lon: 12.03000, 76.21500  stable   # Nagarhole, Karnataka
+lat, lon: 11.65500, 76.56000  stable   # Bandipur, Karnataka (moved: first spot touched a training area)
+lat, lon: 17.60000, 81.47000  stable   # Papikonda, Andhra Pradesh
+lat, lon: 13.80000, 79.25000  stable   # Seshachalam, Andhra Pradesh

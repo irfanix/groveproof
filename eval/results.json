@@ -1,0 +1,218 @@
+{
+  "summary": {
+    "areas": 20,
+    "checked": 20,
+    "cant_check_yet": 0,
+    "errors": 0,
+    "cleared_marked_verified": 7,
+    "cleared_caught": 3,
+    "cleared_total": 10,
+    "stable_verified": 10,
+    "stable_wrongly_not_eligible": 0,
+    "stable_total": 10,
+    "rerun_same": 20,
+    "avg_seconds": 20.1
+  },
+  "rows": [
+    {
+      "id": "loss-01",
+      "truth": "loss",
+      "verdict": "Verified",
+      "loss_pct": 0.59,
+      "clear_pct": 100.0,
+      "forest_ha": 18.52,
+      "seconds": 22.2,
+      "rerun_same": true
+    },
+    {
+      "id": "loss-02",
+      "truth": "loss",
+      "verdict": "NeedsReview",
+      "loss_pct": 3.0,
+      "clear_pct": 100.0,
+      "forest_ha": 18.03,
+      "seconds": 24.8,
+      "rerun_same": true
+    },
+    {
+      "id": "loss-03",
+      "truth": "loss",
+      "verdict": "NeedsReview",
+      "loss_pct": 2.31,
+      "clear_pct": 100.0,
+      "forest_ha": 18.19,
+      "seconds": 20.0,
+      "rerun_same": true
+    },
+    {
+      "id": "loss-04",
+      "truth": "loss",
+      "verdict": "NeedsReview",
+      "loss_pct": 3.12,
+      "clear_pct": 100.0,
+      "forest_ha": 15.59,
+      "seconds": 16.9,
+      "rerun_same": true
+    },
+    {
+      "id": "loss-05",
+      "truth": "loss",
+      "verdict": "Verified",
+      "loss_pct": 1.43,
+      "clear_pct": 100.0,
+      "forest_ha": 18.56,
+      "seconds": 17.9,
+      "rerun_same": true
+    },
+    {
+      "id": "loss-06",
+      "truth": "loss",
+      "verdict": "Verified",
+      "loss_pct": 0.12,
+      "clear_pct": 100.0,
+      "forest_ha": 17.47,
+      "seconds": 19.2,
+      "rerun_same": true
+    },
+    {
+      "id": "loss-07",
+      "truth": "loss",
+      "verdict": "Verified",
+      "loss_pct": 0.11,
+      "clear_pct": 100.0,
+      "forest_ha": 18.83,
+      "seconds": 19.8,
+      "rerun_same": true
+    },
+    {
+      "id": "loss-08",
+      "truth": "loss",
+      "verdict": "Verified",
+      "loss_pct": 1.09,
+      "clear_pct": 100.0,
+      "forest_ha": 18.97,
+      "seconds": 22.2,
+      "rerun_same": true
+    },
+    {
+      "id": "loss-09",
+      "truth": "loss",
+      "verdict": "Verified",
+      "loss_pct": 0.0,
+      "clear_pct": 100.0,
+      "forest_ha": 17.76,
+      "seconds": 18.3,
+      "rerun_same": true
+    },
+    {
+      "id": "loss-10",
+      "truth": "loss",
+      "verdict": "Verified",
+      "loss_pct": 0.0,
+      "clear_pct": 100.0,
+      "forest_ha": 18.08,
+      "seconds": 19.3,
+      "rerun_same": true
+    },
+    {
+      "id": "stable-01",
+      "truth": "stable",
+      "verdict": "Verified",
+      "loss_pct": 0.0,
+      "clear_pct": 100.0,
+      "forest_ha": 46.77,
+      "seconds": 21.7,
+      "rerun_same": true
+    },
+    {
+      "id": "stable-02",
+      "truth": "stable",
+      "verdict": "Verified",
+      "loss_pct": 0.0,
+      "clear_pct": 100.0,
+      "forest_ha": 46.99,
+      "seconds": 18.3,
+      "rerun_same": true
+    },
+    {
+      "id": "stable-03",
+      "truth": "stable",
+      "verdict": "Verified",
+      "loss_pct": 0.0,
+      "clear_pct": 100.0,
+      "forest_ha": 47.09,
+      "seconds": 19.9,
+      "rerun_same": true
+    },
+    {
+      "id": "stable-04",
+      "truth": "stable",
+      "verdict": "Verified",
+      "loss_pct": 0.0,
+      "clear_pct": 100.0,
+      "forest_ha": 46.67,
+      "seconds": 21.8,
+      "rerun_same": true
+    },
+    {
+      "id": "stable-05",
+      "truth": "stable",
+      "verdict": "Verified",
+      "loss_pct": 0.0,
+      "clear_pct": 100.0,
+      "forest_ha": 46.62,
+      "seconds": 16.9,
+      "rerun_same": true
+    },
+    {
+      "id": "stable-06",
+      "truth": "stable",
+      "verdict": "Verified",
+      "loss_pct": 0.0,
+      "clear_pct": 100.0,
+      "forest_ha": 47.57,
+      "seconds": 25.9,
+      "rerun_same": true
+    },
+    {
+      "id": "stable-07",
+      "truth": "stable",
+      "verdict": "Verified",
+      "loss_pct": 0.0,
+      "clear_pct": 100.0,
+      "forest_ha": 49.7,
+      "seconds": 20.4,
+      "rerun_same": true
+    },
+    {
+      "id": "stable-08",
+      "truth": "stable",
+      "verdict": "Verified",
+      "loss_pct": 0.02,
+      "clear_pct": 100.0,
+      "forest_ha": 49.39,
+      "seconds": 18.9,
+      "rerun_same": true
+    },
+    {
+      "id": "stable-09",
+      "truth": "stable",
+      "verdict": "Verified",
+      "loss_pct": 0.0,
+      "clear_pct": 100.0,
+      "forest_ha": 48.27,
+      "seconds": 19.1,
+      "rerun_same": true
+    },
+    {
+      "id": "stable-10",
+      "truth": "stable",
+      "verdict": "Verified",
+      "loss_pct": 0.0,
+      "clear_pct": 100.0,
+      "forest_ha": 49.13,
+      "seconds": 19.0,
+      "rerun_same": true
+    }
+  ]
+}

@@ -29,7 +29,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from pydantic import BaseModel
 
-from . import assistant, chain, evidence, pipeline
+from . import assistant, chain, diagnose, evidence, pipeline
 from .cells import boundary_to_cells, cells_geojson, cells_to_strings
 from .model import load_model
 from .rerun import rerun
@@ -81,6 +81,24 @@ class CheckRequest(BaseModel):
     after: list[str] | None = None
     zone: str | None = None
     live: bool = False                    # force a fresh satellite check for a sample
+
+
+class DiagnoseRequest(BaseModel):
+    boundary: dict
+    before: list[str]
+    after: list[str]
+
+
+@app.post("/api/diagnose")
+def diagnose_area(req: DiagnoseRequest):
+    """Pixel measurements for choosing and testing the clearing rule (see groveproof/diagnose.py)."""
+    cells = cells_to_strings(boundary_to_cells(req.boundary, config()["h3_resolution"]))
+    if len(cells) > 40:
+        raise HTTPException(400, "Diagnose is for small test areas only (40 map cells at most).")
+    try:
+        return diagnose.measure(req.boundary, tuple(req.before), tuple(req.after))
+    except ValueError as e:
+        raise HTTPException(422, str(e))
 
 
 class RecheckRequest(BaseModel):

@@ -1,12 +1,956 @@
 {
   "type": "FeatureCollection",
-  "note": "Evaluation areas. NEVER use them for training. Add at least 10 areas with confirmed tree loss (truth = loss) from Global Forest Watch (tree cover loss layer, pick the loss year between the two windows) and 10 stable protected forests (truth = stable). Each area about 1 to 3 km2. The two examples below must be checked on a satellite map and replaced or confirmed.",
+  "note": "Evaluation areas, never used for training. Made by eval/make_areas.py from eval/points.txt.",
   "features": [
     {
       "type": "Feature",
-      "properties": {"id": "stable-01", "truth": "stable", "name": "EXAMPLE: replace with a confirmed stable forest",
-                     "before": ["2025-01-01", "2025-03-31"], "after": ["2026-01-01", "2026-03-31"], "source": "to fill: how you confirmed it"},
-      "geometry": {"type": "Polygon", "coordinates": [[[78.840, 16.020], [78.855, 16.020], [78.855, 16.034], [78.840, 16.034], [78.840, 16.020]]]}
+      "properties": {
+        "id": "loss-01",
+        "truth": "loss",
+        "loss_year": 2024,
+        "before": [
+          "2023-11-01",
+          "2024-01-31"
+        ],
+        "after": [
+          "2024-11-01",
+          "2025-01-31"
+        ],
+        "source": "Global Forest Watch tree cover loss 2024, picked by hand",
+        "point": [
+          17.87611,
+          81.81927
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              81.81727,
+              17.87411
+            ],
+            [
+              81.82127,
+              17.87411
+            ],
+            [
+              81.82127,
+              17.87811
+            ],
+            [
+              81.81727,
+              17.87811
+            ],
+            [
+              81.81727,
+              17.87411
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "loss-02",
+        "truth": "loss",
+        "loss_year": 2024,
+        "before": [
+          "2023-11-01",
+          "2024-01-31"
+        ],
+        "after": [
+          "2024-11-01",
+          "2025-01-31"
+        ],
+        "source": "Global Forest Watch tree cover loss 2024, picked by hand",
+        "point": [
+          17.82843,
+          81.91626
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              81.91426,
+              17.82643
+            ],
+            [
+              81.91826,
+              17.82643
+            ],
+            [
+              81.91826,
+              17.83043
+            ],
+            [
+              81.91426,
+              17.83043
+            ],
+            [
+              81.91426,
+              17.82643
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "loss-03",
+        "truth": "loss",
+        "loss_year": 2024,
+        "before": [
+          "2023-11-01",
+          "2024-01-31"
+        ],
+        "after": [
+          "2024-11-01",
+          "2025-01-31"
+        ],
+        "source": "Global Forest Watch tree cover loss 2024, picked by hand",
+        "point": [
+          17.81719,
+          81.90766
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              81.90566,
+              17.81519
+            ],
+            [
+              81.90966,
+              17.81519
+            ],
+            [
+              81.90966,
+              17.81919
+            ],
+            [
+              81.90566,
+              17.81919
+            ],
+            [
+              81.90566,
+              17.81519
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "loss-04",
+        "truth": "loss",
+        "loss_year": 2024,
+        "before": [
+          "2023-11-01",
+          "2024-01-31"
+        ],
+        "after": [
+          "2024-11-01",
+          "2025-01-31"
+        ],
+        "source": "Global Forest Watch tree cover loss 2024, picked by hand",
+        "point": [
+          17.98747,
+          81.98078
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              81.97878,
+              17.98547
+            ],
+            [
+              81.98278,
+              17.98547
+            ],
+            [
+              81.98278,
+              17.98947
+            ],
+            [
+              81.97878,
+              17.98947
+            ],
+            [
+              81.97878,
+              17.98547
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "loss-05",
+        "truth": "loss",
+        "loss_year": 2024,
+        "before": [
+          "2023-11-01",
+          "2024-01-31"
+        ],
+        "after": [
+          "2024-11-01",
+          "2025-01-31"
+        ],
+        "source": "Global Forest Watch tree cover loss 2024, picked by hand",
+        "point": [
+          17.80141,
+          81.89661
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              81.89461,
+              17.79941
+            ],
+            [
+              81.89861,
+              17.79941
+            ],
+            [
+              81.89861,
+              17.80341
+            ],
+            [
+              81.89461,
+              17.80341
+            ],
+            [
+              81.89461,
+              17.79941
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "loss-06",
+        "truth": "loss",
+        "loss_year": 2024,
+        "before": [
+          "2023-11-01",
+          "2024-01-31"
+        ],
+        "after": [
+          "2024-11-01",
+          "2025-01-31"
+        ],
+        "source": "Global Forest Watch tree cover loss 2024, picked by hand",
+        "point": [
+          17.69062,
+          81.66488
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              81.66288,
+              17.68862
+            ],
+            [
+              81.66688,
+              17.68862
+            ],
+            [
+              81.66688,
+              17.69262
+            ],
+            [
+              81.66288,
+              17.69262
+            ],
+            [
+              81.66288,
+              17.68862
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "loss-07",
+        "truth": "loss",
+        "loss_year": 2024,
+        "before": [
+          "2023-11-01",
+          "2024-01-31"
+        ],
+        "after": [
+          "2024-11-01",
+          "2025-01-31"
+        ],
+        "source": "Global Forest Watch tree cover loss 2024, picked by hand",
+        "point": [
+          17.47076,
+          81.76083
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              81.75883,
+              17.46876
+            ],
+            [
+              81.76283,
+              17.46876
+            ],
+            [
+              81.76283,
+              17.47276
+            ],
+            [
+              81.75883,
+              17.47276
+            ],
+            [
+              81.75883,
+              17.46876
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "loss-08",
+        "truth": "loss",
+        "loss_year": 2024,
+        "before": [
+          "2023-11-01",
+          "2024-01-31"
+        ],
+        "after": [
+          "2024-11-01",
+          "2025-01-31"
+        ],
+        "source": "Global Forest Watch tree cover loss 2024, picked by hand",
+        "point": [
+          17.97173,
+          82.0391
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              82.0371,
+              17.96973
+            ],
+            [
+              82.0411,
+              17.96973
+            ],
+            [
+              82.0411,
+              17.97373
+            ],
+            [
+              82.0371,
+              17.97373
+            ],
+            [
+              82.0371,
+              17.96973
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "loss-09",
+        "truth": "loss",
+        "loss_year": 2024,
+        "before": [
+          "2023-11-01",
+          "2024-01-31"
+        ],
+        "after": [
+          "2024-11-01",
+          "2025-01-31"
+        ],
+        "source": "Global Forest Watch tree cover loss 2024, picked by hand",
+        "point": [
+          17.94242,
+          82.05385
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              82.05185,
+              17.94042
+            ],
+            [
+              82.05585,
+              17.94042
+            ],
+            [
+              82.05585,
+              17.94442
+            ],
+            [
+              82.05185,
+              17.94442
+            ],
+            [
+              82.05185,
+              17.94042
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "loss-10",
+        "truth": "loss",
+        "loss_year": 2024,
+        "before": [
+          "2023-11-01",
+          "2024-01-31"
+        ],
+        "after": [
+          "2024-11-01",
+          "2025-01-31"
+        ],
+        "source": "Global Forest Watch tree cover loss 2024, picked by hand",
+        "point": [
+          17.44449,
+          81.63652
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              81.63452,
+              17.44249
+            ],
+            [
+              81.63852,
+              17.44249
+            ],
+            [
+              81.63852,
+              17.44649
+            ],
+            [
+              81.63452,
+              17.44649
+            ],
+            [
+              81.63452,
+              17.44249
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "stable-01",
+        "truth": "stable",
+        "before": [
+          "2024-11-01",
+          "2025-01-31"
+        ],
+        "after": [
+          "2025-11-01",
+          "2026-01-31"
+        ],
+        "source": "Global Forest Watch: dense tree cover, no loss nearby, picked by hand",
+        "point": [
+          21.75,
+          86.32
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.3168,
+              21.7468
+            ],
+            [
+              86.3232,
+              21.7468
+            ],
+            [
+              86.3232,
+              21.7532
+            ],
+            [
+              86.3168,
+              21.7532
+            ],
+            [
+              86.3168,
+              21.7468
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "stable-02",
+        "truth": "stable",
+        "before": [
+          "2024-11-01",
+          "2025-01-31"
+        ],
+        "after": [
+          "2025-11-01",
+          "2026-01-31"
+        ],
+        "source": "Global Forest Watch: dense tree cover, no loss nearby, picked by hand",
+        "point": [
+          21.95,
+          86.25
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.2468,
+              21.9468
+            ],
+            [
+              86.2532,
+              21.9468
+            ],
+            [
+              86.2532,
+              21.9532
+            ],
+            [
+              86.2468,
+              21.9532
+            ],
+            [
+              86.2468,
+              21.9468
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "stable-03",
+        "truth": "stable",
+        "before": [
+          "2024-11-01",
+          "2025-01-31"
+        ],
+        "after": [
+          "2025-11-01",
+          "2026-01-31"
+        ],
+        "source": "Global Forest Watch: dense tree cover, no loss nearby, picked by hand",
+        "point": [
+          21.7,
+          86.245
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.2418,
+              21.6968
+            ],
+            [
+              86.2482,
+              21.6968
+            ],
+            [
+              86.2482,
+              21.7032
+            ],
+            [
+              86.2418,
+              21.7032
+            ],
+            [
+              86.2418,
+              21.6968
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "stable-04",
+        "truth": "stable",
+        "before": [
+          "2024-11-01",
+          "2025-01-31"
+        ],
+        "after": [
+          "2025-11-01",
+          "2026-01-31"
+        ],
+        "source": "Global Forest Watch: dense tree cover, no loss nearby, picked by hand",
+        "point": [
+          22.475,
+          81.79
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              81.7868,
+              22.4718
+            ],
+            [
+              81.7932,
+              22.4718
+            ],
+            [
+              81.7932,
+              22.4782
+            ],
+            [
+              81.7868,
+              22.4782
+            ],
+            [
+              81.7868,
+              22.4718
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "stable-05",
+        "truth": "stable",
+        "before": [
+          "2024-11-01",
+          "2025-01-31"
+        ],
+        "after": [
+          "2025-11-01",
+          "2026-01-31"
+        ],
+        "source": "Global Forest Watch: dense tree cover, no loss nearby, picked by hand",
+        "point": [
+          22.52,
+          81.735
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              81.7318,
+              22.5168
+            ],
+            [
+              81.7382,
+              22.5168
+            ],
+            [
+              81.7382,
+              22.5232
+            ],
+            [
+              81.7318,
+              22.5232
+            ],
+            [
+              81.7318,
+              22.5168
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "stable-06",
+        "truth": "stable",
+        "before": [
+          "2024-11-01",
+          "2025-01-31"
+        ],
+        "after": [
+          "2025-11-01",
+          "2026-01-31"
+        ],
+        "source": "Global Forest Watch: dense tree cover, no loss nearby, picked by hand",
+        "point": [
+          19.158,
+          80.56
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.5568,
+              19.1548
+            ],
+            [
+              80.5632,
+              19.1548
+            ],
+            [
+              80.5632,
+              19.1612
+            ],
+            [
+              80.5568,
+              19.1612
+            ],
+            [
+              80.5568,
+              19.1548
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "stable-07",
+        "truth": "stable",
+        "before": [
+          "2024-11-01",
+          "2025-01-31"
+        ],
+        "after": [
+          "2025-11-01",
+          "2026-01-31"
+        ],
+        "source": "Global Forest Watch: dense tree cover, no loss nearby, picked by hand",
+        "point": [
+          12.03,
+          76.215
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.2118,
+              12.0268
+            ],
+            [
+              76.2182,
+              12.0268
+            ],
+            [
+              76.2182,
+              12.0332
+            ],
+            [
+              76.2118,
+              12.0332
+            ],
+            [
+              76.2118,
+              12.0268
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "stable-08",
+        "truth": "stable",
+        "before": [
+          "2024-11-01",
+          "2025-01-31"
+        ],
+        "after": [
+          "2025-11-01",
+          "2026-01-31"
+        ],
+        "source": "Global Forest Watch: dense tree cover, no loss nearby, picked by hand",
+        "point": [
+          11.655,
+          76.56
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.5568,
+              11.6518
+            ],
+            [
+              76.5632,
+              11.6518
+            ],
+            [
+              76.5632,
+              11.6582
+            ],
+            [
+              76.5568,
+              11.6582
+            ],
+            [
+              76.5568,
+              11.6518
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "stable-09",
+        "truth": "stable",
+        "before": [
+          "2024-11-01",
+          "2025-01-31"
+        ],
+        "after": [
+          "2025-11-01",
+          "2026-01-31"
+        ],
+        "source": "Global Forest Watch: dense tree cover, no loss nearby, picked by hand",
+        "point": [
+          17.6,
+          81.47
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              81.4668,
+              17.5968
+            ],
+            [
+              81.4732,
+              17.5968
+            ],
+            [
+              81.4732,
+              17.6032
+            ],
+            [
+              81.4668,
+              17.6032
+            ],
+            [
+              81.4668,
+              17.5968
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "stable-10",
+        "truth": "stable",
+        "before": [
+          "2024-11-01",
+          "2025-01-31"
+        ],
+        "after": [
+          "2025-11-01",
+          "2026-01-31"
+        ],
+        "source": "Global Forest Watch: dense tree cover, no loss nearby, picked by hand",
+        "point": [
+          13.8,
+          79.25
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              79.2468,
+              13.7968
+            ],
+            [
+              79.2532,
+              13.7968
+            ],
+            [
+              79.2532,
+              13.8032
+            ],
+            [
+              79.2468,
+              13.8032
+            ],
+            [
+              79.2468,
+              13.7968
+            ]
+          ]
+        ]
+      }
     }
   ]
 }
