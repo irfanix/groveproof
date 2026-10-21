@@ -76,7 +76,8 @@ boundary ─► H3 map cells ─► claimed on-chain? ── yes ─► Already 
                                   ▼
 Sentinel-2, before and after (same months, one year apart)
  ─► cloud mask ─► median picture ─► forest map per 10 m pixel (Random Forest)
- ─► tree loss = forest before, not forest after, and NDVI dropped by at least 0.1
+ ─► tree loss = forest before, and now: not forest with NDVI down ≥ 0.1,
+                 OR greenness (NDVI) or moisture (NDMI) down ≥ 0.15 (cleared, even if weeds grew back)
  ─► verdict rules ─► credits ─► recipe + result hashes ─► recordVerification on-chain
 ```
 
@@ -100,6 +101,33 @@ Sentinel-2, before and after (same months, one year apart)
 **When unsure, credit less.** At least 28% of every estimate is held back (20 to 35% for uncertainty, plus a 10% buffer). Cloudy pixels are never counted. Outside the region where I have carbon factors, the app shows the satellite result but no credit number.
 
 ## Results
+
+### The test that changed the project
+
+I picked 20 places the system had never seen, using [Global Forest Watch](https://www.globalforestwatch.org/map/) (now Global Nature Watch): **10 patches where forest was cleared in 2024** (Eastern Ghats, Andhra Pradesh) and **10 dense protected forests** with no recorded loss (Similipal, Achanakmar, Indravati, Nagarhole, Bandipur, Papikonda, Seshachalam). None of them touches the land the forest model was trained on; `eval/make_areas.py` refuses any that does. Each area was checked for real, then re-run from its saved recipe.
+
+| | First run (rules 1.2) | After the fix (rules 1.4) |
+|---|---|---|
+| **Cleared forests marked Verified** (the number that must be 0) | **8 of 10** | **1 of 10** |
+| Cleared forests caught (Not eligible or Needs review) | 2 of 10 | 9 of 10 |
+| Healthy forests Verified | 10 of 10 | 10 of 10 |
+| Healthy forests wrongly flagged | 0 of 10 | 0 of 10 |
+| Re-run gave the same hash | 20 of 20 | 20 of 20 |
+| Average check time | 26 s | 23 s |
+
+**What went wrong the first time.** The first run missed 8 of 10 clearings. In the after picture I could see a brown cleared patch, but the forest map was all green. The model learned "forest" from a very broad label (any land with more than 10% tree cover), and by November weeds and crops had grown back on the cleared land, so it still looked green enough.
+
+**How I fixed it, with numbers instead of guesses.** I added `eval/collect.py`, which measures every pixel of the 20 areas, and compared cleared land with healthy forest:
+
+| Signal (same months, one year apart) | Pixels changed in the 2 biggest clearings | Pixels changed in healthy forests (worst of 10) |
+|---|---|---|
+| Greenness (NDVI) down ≥ 0.15 | about 18% | 0% |
+| Moisture (NDMI, short-wave infrared) down ≥ 0.15 | about 24% | 0.6% |
+
+Greenness comes back quickly after clearing, but the land stays drier. I tried 6 rules on the measurements and kept the one that caught the most clearings with no false alarms on healthy forest: **a forest pixel is cleared if its greenness or its moisture dropped by 0.15 or more**, whatever the model says. The real run then matched the simulation pixel for pixel (for example 23.8% loss predicted and measured on area loss-01).
+
+**Honest limits of this test.** I chose the rule after looking at these same 20 areas, so 9 of 10 is a best case. 10 + 10 areas is a small sample, all the clearings come from one region, and the one clearing still marked Verified (loss-10) showed almost no change in any signal. A fresh set of areas from other states is the next test (see What's next). Results: `eval/results.json`, measurements: `eval/measurements.json`.
+
 
 **Forest model.** Random Forest on 6 Sentinel-2 bands plus NDVI and NDMI. Accuracy on held-out pixels it never trained on: **93.1%**.
 
@@ -132,7 +160,7 @@ The forest did not change. The trees did: dry deciduous forest drops its leaves 
 | Buy credits from a frozen forest | `ProjectIsFrozen` |
 | Record a verdict without being the verifier | `AccessControlUnauthorizedAccount` |
 
-**Tests:** 22 contract tests and 37 checker tests, all passing.
+**Tests:** 22 contract tests and 39 checker tests, all passing.
 
 ## What could go wrong
 
@@ -140,6 +168,7 @@ The forest did not change. The trees did: dry deciduous forest drops its leaves 
 |---|---|
 | Clouds hide the land | Below 70% clear: no verdict, "Can't check yet" |
 | Leaf fall looks like tree loss | Same green-season months in both years, by default |
+| Cleared land grows weeds and looks green again | Moisture (NDMI) and greenness drops count as clearing, even if the model still says forest |
 | The model is unsure (scrub, scattered trees, young plantation) | More than 20% unsure pixels: Needs review, never Verified |
 | A project claims more credits | The contract caps credits at the satellite number |
 | Two projects claim the same land | Map cells: the second one is refused |
@@ -169,6 +198,7 @@ It is fixed (`factors-1.1`). GP-1, GP-2 and GP-3 were created before the fix, an
 | MetaMask's node was a few blocks behind and sent failing transactions | The site tests every transaction on its own node first and sets the fee itself | Don't trust one node |
 | Public nodes only search 10,000 blocks at a time | Read events in 9,000-block pieces, 4 at a time | Passports load in about 2 seconds instead of 30+ |
 | A wrong sentence: "57.7% is forest, at least 30% needed: Not eligible" | Each rule now has its own message | Every message is part of the proof |
+| My own test showed 8 of 10 cleared forests marked Verified | Measured every pixel, added a moisture-based clearing check | 1 of 10 now. Test on places you did not choose |
 
 ## What it is not
 
@@ -187,7 +217,7 @@ It is fixed (`factors-1.1`). GP-1, GP-2 and GP-3 were created before the fix, an
 
 ## What's next
 
-1. A 20-area test against Global Forest Watch: 10 forests with confirmed clearing and 10 stable ones, with the confusion matrix in this README.
+1. A fresh test on cleared forests from other states (Odisha, Chhattisgarh, Telangana) that played no part in choosing the clearing rule, and a forest model retrained on green-season pictures with a stricter forest label.
 2. Carbon factors for more forest types, each with its source in the recipe.
 3. Automatic yearly re-checks, so living credits stay living without anyone pressing a button.
 4. Field evidence (geotagged photos, forest department reports) reviewed by a second person before credits are created. The upload and review screens already exist.
@@ -213,7 +243,7 @@ cd verifier
 python -m venv .venv
 # Windows: .venv\Scripts\activate     Mac/Linux: source .venv/bin/activate
 pip install -r requirements.txt
-pytest -q                              # 37 passed
+pytest -q                              # 39 passed
 cp .env.example .env                   # RPC_URL, VERIFIER_PRIVATE_KEY
 uvicorn groveproof.api:app --reload --port 8000
 ```
