@@ -192,7 +192,8 @@ function RetirementView({ id }) {
           <Hex className="w-14 h-14 bg-leaf text-white text-2xl">✓</Hex>
           <div className="text-xs font-bold tracking-[0.18em] uppercase text-leaf">Retirement certificate</div>
           <h2 className="text-4xl font-extrabold">R-{id}</h2>
-          <p className="text-lg"><b>{Number(r.amount)} tonnes of CO₂</b> from <Link className="underline" to={`/lookup?q=GP-${Number(r.projectId)}`}>GP-{Number(r.projectId)}{name ? ` ${name}` : ""}</Link> were retired for <b>{r.beneficiary}</b> on {date(Number(r.at))}.</p>
+          {/* r[4] is "at": on an ethers Result, r.at is the Array method, not the field */}
+          <p className="text-lg"><b>{Number(r.amount)} tonnes of CO₂</b> from <Link className="underline" to={`/lookup?q=GP-${Number(r.projectId)}`}>GP-{Number(r.projectId)}{name ? ` ${name}` : ""}</Link> were retired for <b>{r.beneficiary}</b> on {date(Number(r[4]))}.</p>
           <p className="muted">Retired by {short(r.by)}. These credits were burned on the blockchain, so they can never be sold or retired again.</p>
         </div>
         <Qr text={link} label="Scan to check this certificate" />

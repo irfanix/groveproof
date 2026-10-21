@@ -168,7 +168,8 @@ def decide(n: dict, v: dict) -> tuple[str, str]:
     if n["low_confidence_pct"] > v["max_low_confidence_pct"]:
         return "NeedsReview", (
             f"The forest map is unsure about {n['low_confidence_pct']}% of the area, "
-            f"so a person should take a look.")
+            f"so a person should take a look. This often happens with scrubland or scattered trees, "
+            f"young plantations, or pictures taken when the trees have dropped their leaves.")
     return "Verified", (
         f"{n['forest_after_ha']} ha of forest is clearly visible and tree loss is "
         f"{n['loss_pct']}%, below the {v['review_loss_pct']}% review level.")

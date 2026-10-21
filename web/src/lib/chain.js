@@ -108,34 +108,44 @@ export function parseMeta(uri = "") {
 }
 export const makeMeta = (checkId, name) => `groveproof:${checkId}:${encodeURIComponent(name)}`;
 
-// Event history of one project, read in block ranges (public RPCs limit how far one search can go).
-export async function projectHistory(projectId) {
+// Every event of the contract between two blocks, in one pass.
+// Public RPCs search at most 10,000 blocks per request, so the range is cut into pieces that are
+// fetched a few at a time in parallel, with one request per piece for all event types together.
+// A piece that fails is split in two and tried again.
+const PIECE = 9000;
+const PARALLEL = 4;
+
+async function logsIn(from, to) {
   const c = reader();
-  const latest = await c.runner.getBlockNumber();
-  const start = Number(deployment.deployBlock || 0);
-  const names = ["ProjectRegistered", "VerificationRecorded", "CreditsIssued", "CreditsBought", "CreditsRetired", "Rechecked", "ProjectFrozen"];
-  const events = [];
-  let step = 50000;
-  for (let from = start; from <= latest; ) {
-    const to = Math.min(from + step - 1, latest);
-    try {
-      for (const name of names) {
-        const filter = name === "CreditsRetired" ? c.filters.CreditsRetired(null, projectId) : c.filters[name](projectId);
-        const logs = await c.queryFilter(filter, from, to);
-        events.push(...logs.map((l) => ({ name, args: l.args, block: l.blockNumber, tx: l.transactionHash, index: l.index })));
-      }
-      from = to + 1;
-    } catch (e) {
-      if (step <= 1000) throw e;
-      step = Math.floor(step / 5); // the RPC said the range is too big; try smaller pieces
-    }
+  try {
+    return await c.runner.getLogs({ address: deployment.address, fromBlock: from, toBlock: to });
+  } catch (e) {
+    if (to - from < 500) throw e;
+    const mid = Math.floor((from + to) / 2);
+    return [...(await logsIn(from, mid)), ...(await logsIn(mid + 1, to))];
   }
-  events.sort((a, b) => a.block - b.block || a.index - b.index);
-  const times = {};
-  await Promise.all([...new Set(events.map((e) => e.block))].map(async (b) => {
-    times[b] = (await c.runner.getBlock(b)).timestamp;
+}
+
+export async function contractLogs(fromBlock, toBlock) {
+  const c = reader();
+  const pieces = [];
+  for (let f = fromBlock; f <= toBlock; f += PIECE) pieces.push([f, Math.min(f + PIECE - 1, toBlock)]);
+  const results = new Array(pieces.length);
+  let next = 0;
+  await Promise.all(Array.from({ length: Math.min(PARALLEL, pieces.length) }, async () => {
+    while (next < pieces.length) {
+      const i = next++;
+      results[i] = await logsIn(...pieces[i]);
+    }
   }));
-  return events.map((e) => ({ ...e, time: times[e.block] }));
+  const out = [];
+  for (const l of results.flat()) {
+    let parsed = null;
+    try { parsed = c.interface.parseLog(l); } catch { /* not one of ours */ }
+    if (parsed) out.push({ name: parsed.name, args: parsed.args, block: l.blockNumber, tx: l.transactionHash, index: l.index ?? l.logIndex });
+  }
+  out.sort((a, b) => a.block - b.block || a.index - b.index);
+  return out;
 }
 
 // ------------------------------------------------------------------ refusal reasons in plain words

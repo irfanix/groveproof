@@ -2,7 +2,7 @@
 // which credits, and what stage each credit batch has reached. Read once, cached for 30 s,
 // and used by the dashboard, the credit passport, the map, the charts, alerts and the assistant.
 import { ZeroAddress } from "ethers";
-import { deployment, listProjects, parseMeta, reader } from "./chain";
+import { contractLogs, deployment, listProjects, parseMeta, reader } from "./chain";
 
 const NAMES = ["ProjectRegistered", "VerificationRecorded", "CreditsIssued", "CreditsBought", "CreditsRetired", "Rechecked", "ProjectFrozen", "TransferSingle"];
 export const STAGES = ["Pending", "Verified", "Issued", "Transferred", "Retired"];
@@ -16,21 +16,7 @@ async function readAllEvents() {
   const c = reader();
   const latest = await c.runner.getBlockNumber();
   const start = Number(deployment.deployBlock || 0);
-  const out = [];
-  let step = 50000;
-  for (let from = start; from <= latest; ) {
-    const to = Math.min(from + step - 1, latest);
-    try {
-      for (const name of NAMES) {
-        const logs = await c.queryFilter(c.filters[name](), from, to);
-        out.push(...logs.map((l) => ({ name, args: l.args, block: l.blockNumber, tx: l.transactionHash, index: l.index })));
-      }
-      from = to + 1;
-    } catch (e) {
-      if (step <= 1000) throw e;
-      step = Math.floor(step / 5);
-    }
-  }
+  const out = (await contractLogs(start, latest)).filter((e) => NAMES.includes(e.name));
   out.sort((a, b) => a.block - b.block || a.index - b.index);
   const times = {};
   await Promise.all([...new Set(out.map((e) => e.block))].map(async (b) => { times[b] = (await c.runner.getBlock(b)).timestamp; }));
